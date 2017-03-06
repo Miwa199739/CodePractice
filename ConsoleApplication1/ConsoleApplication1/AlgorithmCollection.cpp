@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -795,6 +796,7 @@ int singleNumber(vector<int>& nums) {
 	return sum;
 }
 
+//最长公共子串
 //以字符串中的每个字符作为子串的端点，判定以此为开始的子串的相同字符最长能达到的长度。
 int AlgorithmCollection::findCommonLongestSubstring(string &a, string &b) {
 	int size_a = a.size();
@@ -874,6 +876,7 @@ int AlgorithmCollection::findCommonLongestSubstringWithDP(string &a, string &b) 
 	return maxLength;
 }
 
+//求公共最长前缀
 string AlgorithmCollection::findLongestCommonPrefix(vector<string> &strs) {
 	//考虑到各个字符串的长度并不都是相同，所以我们用最短的字符串来做判断；
 	string res = "";

@@ -16,6 +16,13 @@ public:
 	//ÅÐ¶ÏÖØ¸´Ä£Ê½
 	bool ifRepeatedPattern(string s);
 
+	//
+	struct TreeNode {
+		int val;
+		TreeNode *left;
+		TreeNode *right;
+		TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+	};
 };
 
 #endif
