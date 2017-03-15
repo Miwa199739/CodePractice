@@ -233,8 +233,31 @@ int AlgorithmCollection::removeDuplicates(int A[], int n) {
 	}
 	int j = 0;
 	for (int i = 1; i < n; i++) {
-		if (A[j] != A[i]) {  //j代表新的数组的当前下标，放到新数组里的元素都是不重复的，所以每次判断当前的a[j]和a[i]就可以了，注意不可以判断a[i]和a[i+1]
+		if (A[j] != A[i]) {  
+			//j代表新的数组的当前下标，放到新数组里的元素都是不重复的，所以每次判断当前的a[j]和a[i]就可以了，注意不可以判断a[i]和a[i+1]
 			A[++j] = A[i];
+		}
+	}
+	return j + 1;
+}
+
+int removeDuplicatesII(vector<int>& nums) {
+	if (nums.size() == 0)
+		return 0;
+	int j = 0;
+	int count = 0;
+	for (int i = 1; i < nums.size(); i++) {
+		if (nums[i] == nums[j]){
+			count++;
+			if (count <= 1) {
+				nums[++j] = nums[i];
+			}
+			else
+				continue;
+		}
+		else {
+			nums[++j] = nums[i];
+			count = 0;
 		}
 	}
 	return j + 1;
@@ -567,8 +590,8 @@ void reverse(string s) {
 	int len = s.size();
 	string newstr = s;
 	for (int i = 0; i < len / 2; i++) {
-		newstr[i] = s[len - i - 1];
-		newstr[len - i - 1] = s[i];
+		newstr[i] = s[len - i];
+		newstr[len - i] = s[i];
 	}
 	cout << newstr << endl;
 }

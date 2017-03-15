@@ -39,7 +39,9 @@ bool Algorithm2::ifRepeatedPattern(string s) {
 
 //我最先想到的解法是遍历的点，以每个点都当做根节点，算出高度，然后找出最小的，但是一时半会又写不出程序来，
 //于是上网看看大家的解法，发现大家推崇的方法是一个类似剥洋葱的方法，就是一层一层的褪去叶节点，最后剩下的一个或两个节点就是我们要求的最小高度树的根节点
-//跟之前那到课程清单的题一样，我们需要建立一个图g，是一个二维数组，其中g[i]是一个一维数组，保存了i节点可以到达的所有节点。我们开始将所有只有一个连接边的节点(叶节点)都存入到一个队列queue中，然后我们遍历每一个叶节点，通过图来找到和其相连的节点，并且在其相连节点的集合中将该叶节点删去，如果删完后此节点也也变成一个叶节点了，加入队列中，再下一轮删除。
+//跟之前那到课程清单的题一样，我们需要建立一个图g，是一个二维数组，其中g[i]是一个一维数组，保存了i节点可以到达的所有节点。
+//我们开始将所有只有一个连接边的节点(叶节点)都存入到一个队列queue中，然后我们遍历每一个叶节点，通过图来找到和其相连的节点，
+//并且在其相连节点的集合中将该叶节点删去，如果删完后此节点也也变成一个叶节点了，加入队列中，再下一轮删除。
 //那么我们删到什么时候呢，当节点数小于等于2时候停止，此时剩下的一个或两个节点就是我们要求的最小高度树的根节点啦，
 //一个图最多有两个MHT树，为距离最长的两个节点的中点。关键是怎么找出这两个相聚最远的节点。
 vector<int> findMinHeightTrees(int n, vector<pair<int, int> >& edges) {
@@ -88,7 +90,16 @@ int value(int x1, int x2, int y1, int y2) {
 	return pow(x1 - x2, 2) + pow(y1 - y2, 2);
 }
 
-//这道题定义了一种类似回旋镖形状的三元组结构，要求第一个点和第二个点之间的距离跟第一个点和第三个点之间的距离相等。现在给了我们n个点，让我们找出回旋镖的个数。那么我们想，如果我们有一个点a，还有两个点b和c，如果ab和ac之间的距离相等，那么就有两种排列方法abc和acb；如果有三个点b，c，d都分别和a之间的距离相等，那么有六种排列方法，abc, acb, acd, adc, abd, adb，那么是怎么算出来的呢，很简单，如果有n个点和a距离相等，那么排列方式为n(n-1)，这属于最简单的排列组合问题了，我大天朝中学生都会做的。那么我们问题就变成了遍历所有点，让每个点都做一次点a，然后遍历其他所有点，统计和a距离相等的点有多少个，然后分别带入n(n-1)计算结果并累加到res中，只有当n大于等于2时，res值才会真正增加，
+//这道题定义了一种类似回旋镖形状的三元组结构，
+//要求第一个点和第二个点之间的距离跟第一个点和第三个点之间的距离相等。
+//现在给了我们n个点，让我们找出回旋镖的个数。
+//那么我们想，如果我们有一个点a，还有两个点b和c，如果ab和ac之间的距离相等，
+//那么就有两种排列方法abc和acb；如果有三个点b，c，d都分别和a之间的距离相等，
+//那么有六种排列方法，abc, acb, acd, adc, abd, adb，
+//那么是怎么算出来的呢，很简单，如果有n个点和a距离相等，那么排列方式为n(n-1)，
+//那么我们问题就变成了遍历所有点，让每个点都做一次点a，
+//然后遍历其他所有点，统计和a距离相等的点有多少个，然后分别带入n(n-1)计算结果并累加到res中
+//只有当n大于等于2时，res值才会真正增加，
 int numberOfBoomerangs(vector<pair<int, int>>& points) {
 	int length = 0;
 
@@ -110,6 +121,8 @@ int numberOfBoomerangs(vector<pair<int, int>>& points) {
 	}
 	return length;
 }
+
+//Target Sum
 void findTargetHelper(vector<int>& nums, int S, int start, int &res) {
 	if (start == nums.size()) {
 		if (S == 0)
@@ -126,8 +139,35 @@ int findTargetSumWays(vector<int>& nums, int S) {
 	return res;
 }
 
+void mergeArray(int a[], int m, int b[], int n) {
+	int k = m + n - 1;//m和n分别是A和B的长度
+	int i = m;
+	int j = n;
+		while (k >= 0) {
+			if (i >= 0 && j >= 0) {
+				if (a[i] > b[j]) {
+					a[k] = a[i];
+					i--;
+				}
+				else {
+					a[k] = b[j];
+					j--;
+				}
+			}
+			else if (i >= 0) {
+				a[k] = a[i];
+				i--;
+			}
+			else if (j >= 0) {
+				a[k] = b[j];
+				j--;
+			}
+			else
+				break;
+			k--;
+		}
+}
 
-//
 struct Interval {
 	int start;
 	int end;
@@ -154,8 +194,8 @@ vector<Interval> mergeIntervals(vector<Interval>& intervals) {
 		//因为我们已经对intervals进行了排序，所以这里新的Interval[i]的首元素一定比栈尾的首元素大
 		if (result.back().end < intervals[i].start)
 			result.push_back(intervals[i]);
-		//重叠了，更新result.back
 		else
+			//重叠了，更新result.back
 			result.back().end = max(result.back().end, intervals[i].end);
 	}
 	return result;
@@ -193,7 +233,7 @@ int eraseOverlapIntervals(vector<Interval>& intervals) {
 	for (int i = 1; i < intervals.size(); i++) {
 		if (result.back().end > intervals[i].start)
 		{
-			//注意这里，我们更新result.back().end的值是为了保证把覆盖面最大的那个interval踢掉，
+			//重叠了，我们更新result.back().end的值是为了保证把覆盖面最大的那个interval踢掉，
 			//以免它继续跟下面的interval覆盖，这样能保证我们踢掉的interval数量最小
 			result.back().end = min(result.back().end, intervals[i].end);
 			num++;
@@ -204,7 +244,9 @@ int eraseOverlapIntervals(vector<Interval>& intervals) {
 	return num;
 }
 
-//给一个长度为n的数组和一个长度为k的增量规则向量，用增量规则对数组进行更新，返回新的数组，要求O（k+n）的时间复杂度和额外的O（1）的空间复杂度
+//给一个长度为n的数组和一个长度为k的增量规则向量，
+//用增量规则对数组进行更新，返回新的数组，
+//要求O（k+n）的时间复杂度和额外的O（1）的空间复杂度
 //一般做法，一个一个加，O（n2）不符合时间复杂度的要求
 vector<int> getModifiedArrayForce(int length, vector<vector<int>>& updates) {
 	vector<int> result;
@@ -236,6 +278,7 @@ vector<int> getModifiedArray(int length, vector<vector<int>>& updates) {
 	return result;
 }
 
+//小球穿越迷宫，能否从起始点到达终点
 bool hasPathHelperRecurion(vector<vector<int>>& maze, vector<vector<int>>& dp, vector<vector<bool>> &visited, int start_i, int start_j, int end_i, int end_j) {
 	if (start_i == end_i && start_j == end_j)
 		return true;
@@ -245,6 +288,7 @@ bool hasPathHelperRecurion(vector<vector<int>>& maze, vector<vector<int>>& dp, v
 
 	bool res = false;
 	visited[start_i][start_j] = true;
+	//如果涉及到向上下左右四个方向移动，就是用dirs数组
 	vector<vector<int>> dirs = { { -1,0 },{ 0,-1 } ,{ 1,0 },{ 0,1 } };
 	for (vector<int> dir : dirs) {
 		int x = start_i;
@@ -307,7 +351,9 @@ bool hasPathHelperIterative(vector<vector<int>>& maze, vector<vector<bool>> &vis
 }
 
 //二叉树的竖直遍历
-//基于广度优先遍历，在遍历过程中要给每个元素给一个columnno,左子节点的编号是父节点编号减一，右子节点编号是根节点编号加一，最后根据编号组织vector返回
+//基于广度优先遍历，在遍历过程中要给每个元素给一个columnno,
+//左子节点的编号是父节点编号减一，右子节点编号是根节点编号加一，
+//最后根据编号组织vector返回
 vector<vector<int>> verticalOrder(Algorithm2::TreeNode* root) {
 	map<int, vector<int>> myMap;
 	vector<vector<int>> result;
@@ -354,7 +400,8 @@ int countComponents(int n, vector<pair<int, int>>& edges) {
 			i++;
 			continue;
 		}
-		//如果这个节点没放稳过，那么他肯定在另一个连通区域内，这时我们增加计数，开始从这个节点进行DFS遍历
+		//如果这个节点没访问过，那么他肯定在另一个连通区域内，
+		//这时我们增加计数，开始从这个节点进行DFS遍历
 		count++;
 		stack<int> myStack;
 		myStack.push(i);
@@ -373,10 +420,11 @@ int countComponents(int n, vector<pair<int, int>>& edges) {
 }
 
 //安排课程顺序
+//要上a.second先上a.first
 bool canFinishIterative(int numCourses, vector<pair<int, int>>& prerequisites) {
 	//二维数组存储有向图
 	vector<vector<int>> myVector(numCourses, vector<int>(0));
-	//存储每个节点的入度
+	//存储每个节点的出度
 	vector<int> in(numCourses, 0);
 
 	//初始化
@@ -389,17 +437,19 @@ bool canFinishIterative(int numCourses, vector<pair<int, int>>& prerequisites) {
 	vector<bool> visited(numCourses, false);
 
 	queue<int> myQueue;
-	//把所有入度为0的点push进去
+	//把所有出度为0的点push进去
 	for (int i = 0; i < numCourses; i++) {
 		if (in[i] == 0)
 			myQueue.push(i);
 	}
+
 	//开始BFS
 	while (!myQueue.empty()) {
 		int current = myQueue.front();
 		myQueue.pop();
 		for (auto a : myVector[current]) {
 			in[a]--;
+			//出度为0，为叶子结点
 			if (in[a] == 0)
 				myQueue.push(a);
 		}
@@ -409,6 +459,7 @@ bool canFinishIterative(int numCourses, vector<pair<int, int>>& prerequisites) {
 		if (in[i] != 0)
 			return false;
 	}
+
 	return true;
 }
 
@@ -456,7 +507,7 @@ bool canFinishRecursion(int numCourses, vector<pair<int, int>>& prerequisites) {
 }
 
 bool canFinishRecursionHelper(vector<vector<int> > &myVector, vector<int> &visited, int i) {
-	if (visited[i] == -1)  //已经访问过了，还没确定是否有回路
+	if (visited[i] == -1)  //已经访问过了，再次访问就说明是回路
 		return false;
 	if (visited[i] == 1)  //记录中间状态,已经访问过了且从这一点到图结束不存在回路
 		return true;
@@ -505,22 +556,10 @@ string reverseVowels(string s) {
 	}
 	return result;
 }
-// @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
+//return -1 if my number is lower, 1 if my number is higher, 
+//otherwise return 0
 int guess(int num) {
 	return 0;
-}
-
-//为啥不对？
-int guessNumberMy(int n) {
-	int result = n;
-	if (guess(result) == 1) {
-		return guessNumberMy(result++);
-	}
-	else if (guess(result) == -1) {
-		return guessNumberMy(result--);
-	}
-	else
-		return result;
 }
 
 //二分法找
@@ -528,16 +567,22 @@ int guessNumber(int n) {
 	int high = n;
 	int low = 1;
 	int mid;
+	int money = 0;
 	while (low <= n) {
 		mid = low + (high - low) / 2;
-		if (guess(mid) == 1)
+		if (guess(mid) == 1) {
+			money += mid;
 			low = mid + 1;
-		else if (guess(mid) == -1)
+		}
+		else if (guess(mid) == -1) {
+			money += mid;
 			high = mid - 1;
-		else
-			return mid;
+		}
+		else {
+			return money;
+		}
 	}
-	return -1;
+	return money;
 }
 
 //是否为2的幂次方
@@ -546,6 +591,7 @@ bool isPowerOfTwo(int n) {
 }
 
 //是否为3的幂次方
+//1162261467为int范围内最大的3的倍数
 bool isPowerOfThree(int n) {
 	return (n > 0 && 1162261467 % n == 0);
 }
@@ -560,6 +606,7 @@ bool isPowerOfFour(int num) {
 		num >>= 1;
 		times++;
 	}
+	//被2整除的条件加上2的偶数次方的条件
 	return (count == 1 && times % 2 == 0);
 }
 
@@ -578,8 +625,9 @@ int singleNumberII(vector<int>& nums) {
 	int n = nums.size();
 	if (n = 0) return -1;
 	if (n == 1) return nums[0];
-	int count = 0;;
-	//先给数组进行排序
+	int count = 0;
+	//先排序
+	sort(nums.begin(), nums.end());
 	for (int i = 0; i < n; i++) {
 		if (nums[i] == nums[i + 1])
 			count++;
@@ -603,7 +651,6 @@ vector<int> singleNumberIII(vector<int>& nums) {
 		return result;
 	}
 	sort(nums.begin(), nums.end());
-
 	int count = 1;
 	for (int i = 0; i < nums.size(); i++)
 	{
@@ -648,9 +695,7 @@ int lengthOflongestPalindrome(string s) {
 		myMap[s[i]]++;
 	}
 	for (auto a : myMap) {
-		//if (a.second % 2 == 0 || (a.second % 2 == 1 && a.second >=3)) {
-			length += a.second / 2;
-		//}
+		length += a.second / 2;
 	}
 	length = length * 2 + 1;
 	if (length > s.size())
@@ -667,7 +712,8 @@ string commonLongestSubstringWithDP(string &a, string &b) {
 	//保存以a[i]和b[j]结尾的最长的子串长度
 	vector<vector<int>> myVector(size_a, vector<int>(size_b));
 
-	//考虑到L[i+1,j+1]=(s[i+1]==t[j+1]?L[i,j]+1:0)，我们应该先把L[i,j]算出来，下面是初始情况
+	//考虑到L[i+1,j+1]=(s[i+1]==t[j+1]?L[i,j]+1:0)，
+	//我们应该先把L[i,j]算出来
 	//临界条件，以a[0]结尾的字符串
 	for (int j = 0; j < size_b; j++) {
 		if (a[0] == b[j])
@@ -758,6 +804,26 @@ string longestPalindromeII(string s) {
 	return s.substr(start, maxlength);
 }
 
+//DP解法，P[i,j]表示i，j区间的最长回文串长度
+string longestPalindromeWithDP(string s) {
+	int size = s.size();
+	int maxLength = 0,start = 0,end = 0;
+	if (size == 0)
+		return"";
+	vector<vector<int>> dp(size, vector<int>(size, 0));
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < i; j++) {
+				dp[j][i] = ((s[j] == s[i])&& (i - j < 2 || dp[j + 1][i - 1]));
+				if (dp[j][i] && (i - j + 1) > maxLength) {
+					maxLength = i - j +1;
+					start = j;
+					end = i;
+				}
+		}
+		dp[i][i] = 1;
+	}
+	return s.substr(start, end - start + 1);
+}
 //判断一个数字是否是回文
 bool isPalindrome(int x) {
 	if(x == 0)
@@ -808,13 +874,14 @@ bool isPalindrome(string s) {
 }
 
 //求最长不下降子串的长度
-//动态规划思想，以每个元素结尾的递增序列长度初始化为1，然后利用L[i+1] = L[i+1] > L[i] + 1?L[i+1]:L[i] + 1
+//动态规划思想，以每个元素结尾的递增序列长度初始化为1，然后利用L[i+1] = L[i+1] > L[i] + 1 ? L[i+1] : L[i] + 1
 int lengthOfLIS(vector<int>& nums) {
 	int size_nums = nums.size();
 	int maxLength = 0;
 	vector<int> L(size_nums);
 	for (int i = 0; i < size_nums; i++) {
 		L[i] = 1;
+		//j从0循环到i
 		for (int j = 0; j < i; j++) {
 			if (nums[j] < nums[i]) {
 				L[i] = L[i] < L[j] + 1 ? L[j] + 1 : L[i];
@@ -825,6 +892,7 @@ int lengthOfLIS(vector<int>& nums) {
 	}
 	return maxLength;
 }
+
 
 
 //把一个数的二进制表示翻转，再返回翻转后的数
@@ -850,6 +918,7 @@ string addStrings(string num1, string num2) {
 	while (i >= 0 && j >= 0) {
 		int sum = num1[i] + num2[j] + incre - '0' - '0';
 		incre = sum / 10;
+		//每次都插入到前面，因为我们是从各位开始算的
 		res.insert(res.begin(), sum % 10 + '0');
 		i--;
 		j--;
@@ -870,6 +939,7 @@ string addStrings(string num1, string num2) {
 			i--;
 		}
 	}
+	//如果最后还有进位
 	if (incre != 0) {
 		res.insert(res.begin(), 1+'0');
 	}
@@ -907,6 +977,7 @@ void SplitStringToInt(const string& s, vector<int>& v, const string& c)
 	if (pos1 != s.length())
 		v.push_back(atoi(s.substr(pos1).c_str()));
 }
+
 //sizeOfCase 测试用例个数
 //myVector 每个用例里的矩阵
 //allTarget 每个用例规定的达到字符的个数
@@ -1009,11 +1080,13 @@ void intTostrToint() {
 	//整数转字符串
 	string s = "";
 	s.append(1, 1 + '0');  //在尾部插入
+	s += 1 + '0';
 	s.insert(s.begin(), 1 + '0'); //在开头插入
 	//字符串转整数
 	int n;
 	//先利用c_str()转成C string，再用atoi()或atof(),windows平台特有的，跨平台不适用。
 	n = atoi(s.c_str());
+	//n = stoi(s);
 }
 
 void twoSum(string filename_in,string filename_out) {
@@ -1301,6 +1374,7 @@ int match(vector<vector<string>> &existed, vector<string> newVector) {
 	return res;
 }
 
+//两条线是否相交
 int countIntersections() {
 	freopen("C:/Users/Miwa/Downloads/codejam/A-large-practice.in", "r", stdin);
 	freopen("C:/Users/Miwa/Downloads/codejam/A-large-practice-out.out", "w", stdout);
@@ -1326,6 +1400,46 @@ int countIntersections() {
 		cout << "Case #" << caseID << ": " << intersection << endl;
 	}
 	return intersection;
+}
+
+int filePath() {
+	int T;
+	int existedNO;
+	int expectedNo;
+	int num = 0;
+
+	freopen("C:/Users/Miwa/Downloads/codejam/A-large-practice.in", "r", stdin);
+	freopen("C:/Users/Miwa/Downloads/codejam/A-large-practice-out.out", "w", stdout);
+	cin >> T;
+	for (int caseID = 1; caseID <= T; caseID++) {
+		num = 0;
+		cin >> existedNO >> expectedNo;
+		vector<vector<string>> existed;
+		vector<vector<string>> expected;
+		for (int i = 1; i <= existedNO; i++) {
+			string t;
+			vector<string> temp;
+			cin >> t;
+			SplitStringToString(t, temp, "/");
+			temp.erase(temp.begin());
+			existed.push_back(temp);
+		}
+		for (int i = 1; i <= expectedNo; i++) {
+			string t;
+			vector<string> temp;
+			cin >> t;
+			SplitStringToString(t, temp, "/");
+			temp.erase(temp.begin());
+			expected.push_back(temp);
+		}
+		//开始匹配
+		for (int n = 0; n < expected.size(); n++) {
+			num += match(existed, expected[n]);
+			existed.push_back(expected[n]);
+		}
+		cout << "Case #" << caseID << ": " << num << endl;
+	}
+	return num;
 }
 
 //int countTestCases() {
@@ -1393,46 +1507,6 @@ int countIntersections() {
 //
 //	}
 //}
-
-int filePath() {
-	int T;
-	int existedNO;
-	int expectedNo;
-	int num = 0;
-
-	freopen("C:/Users/Miwa/Downloads/codejam/A-large-practice.in", "r", stdin);
-	freopen("C:/Users/Miwa/Downloads/codejam/A-large-practice-out.out", "w", stdout);
-	cin >> T;
-	for (int caseID = 1; caseID <= T; caseID++) {
-		num = 0;
-		cin >> existedNO >> expectedNo;
-		vector<vector<string>> existed;
-		vector<vector<string>> expected;
-		for (int i = 1; i <= existedNO; i++) {
-			string t;
-			vector<string> temp;
-			cin >> t;
-			SplitStringToString(t, temp, "/");
-			temp.erase(temp.begin());
-			existed.push_back(temp);
-		}
-		for (int i = 1; i <= expectedNo; i++) {
-			string t;
-			vector<string> temp;
-			cin >> t;
-			SplitStringToString(t, temp, "/");
-			temp.erase(temp.begin());
-			expected.push_back(temp);
-		}
-		//开始匹配
-		for (int n = 0; n < expected.size(); n++) {
-			num += match(existed, expected[n]);
-			existed.push_back(expected[n]);
-		}
-		cout << "Case #" << caseID << ": " << num << endl;
-	}
-	return num;
-}
 
 void removeBlank(string &str) {
 	int begin = 0;
