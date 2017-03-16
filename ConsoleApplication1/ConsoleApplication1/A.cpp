@@ -951,7 +951,7 @@ int kthSmallest(TreeNode* root, int k) {
 }
 
 //
-int inOrderForMinDiff(TreeNode* root, vector<int>& res, int& minDiff) {
+void inOrderForMinDiff(TreeNode* root, vector<int>& res, int& minDiff) {
 	if (root == NULL)
 		return;
 
@@ -1220,35 +1220,30 @@ int longestPalindromeSubseq(string s) {
 }
 
 //DP解法，P[i,j]表示i，j区间的最长回文串长度
-string longestPalindromeWithDP(string s) {
-	int size = s.size();
-	int maxLength = 0, start = 0, end = 0;
-	if (size == 0)
-		return"";
-	vector<vector<int>> dp(size, vector<int>(size, 0));
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < i; j++) {
-			dp[j][i] = ((s[j] == s[i]) && (i - j < 2 || dp[j + 1][i - 1]));
-			if (dp[j][i] && (i - j + 1) > maxLength) {
-				maxLength = i - j + 1;
-				start = j;
-				end = i;
-			}
-		}
-		dp[i][i] = 1;
-	}
-	return s.substr(start, end - start + 1);
-}
+//string longestPalindromeWithDP(string s) {
+//	int size = s.size();
+//	int maxLength = 0, start = 0, end = 0;
+//	if (size == 0)
+//		return"";
+//	vector<vector<int>> dp(size, vector<int>(size, 0));
+//	for (int i = 0; i < size; i++) {
+//		for (int j = 0; j < i; j++) {
+//			dp[j][i] = ((s[j] == s[i]) && (i - j < 2 || dp[j + 1][i - 1]));
+//			if (dp[j][i] && (i - j + 1) > maxLength) {
+//				maxLength = i - j + 1;
+//				start = j;
+//				end = i;
+//			}
+//		}
+//		dp[i][i] = 1;
+//	}
+//	return s.substr(start, end - start + 1);
+//}
 
+//升序序比较器
 bool compareForPair(pair<int, int>& a, pair<int, int> &b) {
 	return (a.first + a.second < b.first + b.second);
 }
-
-struct cmp {
-	bool operator() (pair<int, int>& a, pair<int, int> &b) {
-		return (a.first + a.second < b.first + b.second);
-	}
-};
 
 //求和最小的k个pair
 vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
@@ -1269,14 +1264,20 @@ vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, in
 	return res;
 }
 
+//升序比较器
+struct cmp {
+	bool operator() (pair<int, int>& a, pair<int, int> &b) {
+		return (a.first + a.second < b.first + b.second);
+	}
+};
+
 //求和最小的k个pair,用堆（优先队列来做）
-vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+//维护大顶堆，存储各个pair，当大顶堆的数量大于k的时候
+vector<pair<int, int>> kSmallestPairsII(vector<int>& nums1, vector<int>& nums2, int k) {
 	vector<pair<int, int>> res;
-	//注意优先队列的用法，自己定义比较器
+	//注意优先队列的用法，自己定义比较器,这里是大顶堆，用的比较器是<
 	priority_queue <pair<int, int>, vector<pair<int, int>>, cmp> q;
 	if (nums1.empty() && nums2.empty())
-		return res;
-	if (k > nums1.size() * nums2.size())
 		return res;
 
 	for (int i = 0; i < nums1.size(); i++) {
@@ -1284,8 +1285,13 @@ vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, in
 			if (q.size() < k) {
 				q.push({ nums1[i], nums2[j] });
 			}
+			//因为这是大顶堆，堆顶就是最大值，所以一旦发现堆的大小超过了k，就要开始更新堆。
+			//新来的值和堆顶做比较，发现堆顶大了的话就吧堆顶更新
 			else if (nums1[i] + nums2[j] < q.top().first + q.top().second) {
+				//当前的pair值更小，push进去
 				q.push({ nums1[i], nums2[j] });
+				//把堆顶删除，因为他已经不是最小的k个pair里的一个了
+				q.pop();
 			}
 		}
 	}
@@ -1311,10 +1317,6 @@ int maxDepth(TreeNode* root) {
 	return max(maxLength1, maxLength2);
 }
 
-//找到异或值最大的
-int findMaximumXOR(vector<int>& nums) {
-
-}
 
 //找两个数组合并后的第k小的数字
 double finKth(vector<int>& A,vector<int>& B,int A_st,int B_st,int k) {
@@ -1377,46 +1379,170 @@ private:
 	vector<int> myVector;
 };
 
-void dfsForItinerary(unordered_map<string, vector<string>>& graph, string& begin, vector<vector<string>>& all_res,vector<string>& res, int& cur) {
-	if (cur == graph.size()) {
-		all_res.push_back(res);
-		return;
+void dfsForItinerary(unordered_map<string, vector<string>>& graph, string& begin,vector<string>& res) {
+	while(graph[begin].size()) {
+		string t = *graph[begin].begin();
+		graph[begin].erase(graph[begin].begin());
+		dfsForItinerary(graph, t, res);
 	}
-	for (auto temp : graph[begin]) {
-		res.push_back(temp);
-		cur++;
-		dfsForItinerary(graph, temp, all_res, res, cur);
-		res.pop_back();
-	}
+	//while循环最后跳出的时候说明整条路径都走完了，这是我们要回溯回去，所以这里的结点是insert而不是push_back
+	res.insert(graph[begin].begin(),begin);
 }
 
-static bool cmpForVectorString(vector<string> vec1,vector<string> vec2) {
-	for (auto v1: vec1) {
-		for (auto v2 : vec2) {
-			if(v1 > v2)
-		}
-	}
+static bool cmpForString(string& a, string& b) {
+	return a < b;
 }
-
 //构建有效路线
 vector<string> findItinerary(vector<pair<string, string>> tickets) {
 	unordered_map<string, vector<string>> graph;
 	vector<string> res;
-	vector<vector<string>> all_result;
 	//ticket的键值是在字典序上有序的
 	for (auto pair : tickets) {
 		graph[pair.first].push_back(pair.second);
 	}
 
+	for (auto pair : tickets) {
+		sort(graph[pair.first].begin(), graph[pair.first].end(), cmpForString);
+	}
+
 	string begin = "JFK";
 	int i = 0;
-	dfsForItinerary(graph, begin, all_result, res, i);
+	dfsForItinerary(graph, begin, res);
 
-	//对result进行排序，把最小的返回
-	sort(all_result.begin(), all_result.end());
 	return res;
 }
 
+int binarySearch(vector<int> m, int low, int high, int target) {
+	int mid;
+	while (low <= high) {
+		mid =  low + (high - low)/ 2;
+		if (target < m[mid]) {
+			high = mid - 1;
+		}
+		else if (m[mid] < target) {
+			low = mid + 1;
+		}
+		else
+			return mid;
+	}
+	return -1;
+}
+
+//在一个矩阵里搜索某一个数
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+	vector<int> res;
+	for (int i = 0; i < matrix.size(); i++) {
+		for (int j = 0; j < matrix[0].size(); j++) {
+			res.push_back(matrix[i][j]);
+		}
+	}
+	if (res.empty())
+		return false;
+	int s = binarySearch(res, 0, res.size() - 1, target);
+	if (s == -1)
+		return false;
+	else
+		return true;
+}
+
+//在一个矩阵里搜索一个数
+bool searchMatrixII(vector<vector<int>>& matrix, int target) {
+	if (matrix.size() == 0 || matrix[0].size() == 0)
+		return false;
+
+	int i = 0;
+	int j = matrix[0].size() - 1;
+
+	while (i < matrix.size() && j >= 0) {
+		int t = matrix[i][j];
+		if (t > target)
+			j--;
+		else if (t < target)
+			i++;
+		else
+			return true;
+	}
+	return false;
+}
+
+struct cmpDesc {
+	bool operator() (int& a, int& b) {
+		return a > b;
+	}
+};
+
+//寻找数组中第k个大的数，注意最大的数是第一大
+//维护一个小顶堆，然后把数组里的元素一个一个push到堆里，
+//发现堆的大小比k大的时候，把对顶元素弹出，确保小顶堆的元素个数是k，所有元素遍历完成后把堆顶弹出即可
+//注意小顶堆的比较函数是a>b,C++里默认是大顶堆，比较函数是a<b
+int findKthLargest(vector<int>& nums, int k) {
+	priority_queue<int, vector<int>, cmpDesc> p;
+	for (int i = 0; i < nums.size(); i++) {
+		p.push(nums[i]);
+		if (p.size() > k)
+			p.pop();
+	}
+	return p.top();
+}
+
+void swap(int& a, int& b) {
+	int temp = a;
+	a = b;
+	b = temp;
+	return;
+}
+
+static bool cmpForArray(int& a, int &b) {
+	return a > b;
+}
+
+//重新排序数组，变成nums[0] < nums[1] > nums[2] < nums[3]....
+//i++返回原来的值，++i返回加一后的值
+void wiggleSort(vector<int>& nums) {
+	vector<int> temp = nums;
+	int n = nums.size();
+	int k = (n + 1) / 2;
+	int j = n;
+	sort(temp.begin(), temp.end());
+	for (int i = 0; i < n; i++) {
+		nums[i] = i & 1 ? temp[--j] : temp[--k];
+	}
+}
+
+//这种方法交换相邻的两个元素，只适合没有重复元素的数组
+void wiggleSortII(vector<int>& nums) {
+	int n = nums.size();
+	sort(nums.begin(), nums.end(), cmpForArray);
+	for (int i = 0; i < n - 1;) {
+		swap(nums[i], nums[i + 1]);
+		i += 2;
+	}
+}
+
+//按规格输出，三的倍数输出Fizz，五的倍数输出Buzz，既是三又是五的倍数输出FizzBuzz
+vector<string> fizzBuzz(int n) {
+	vector<string> res;
+	for (int i = 1; i <= n; i++) {
+		if (i % 3 == 0 && i % 5 != 0)
+			res.push_back("Fizz");
+		else if (i % 3 != 0 && i % 5 == 0)
+			res.push_back("Buzz");
+		else if (i % 3 == 0 && i % 5 == 0)
+			res.push_back("FizzBuzz");
+		else
+			res.push_back(intToString(n));
+	}
+	return res;
+}
+
+//存储每个站点和其所在线路的unordered_map
+//在从这个map里再初始化出每条线路与和他相邻线路的map
+//把start和end所在的线路找出来，然后用上面准备好的map，从start线路一直找到end线路
+
+
+int minTransfer() {
+
+}
 int main() {
 	//int T;
 	//string empty, line;
@@ -1463,7 +1589,29 @@ int main() {
 	//summaryRanges(vec);
 	//isValid("{[}(((]){}");
 	//reverse(1534236469);
-	vector<string> vec = { "leet","code" };
-	wordBreak("leetcode", vec);
+	//vector<string> vec = { "leet","code" };
+	//wordBreak("leetcode", vec);
+	/*vector<pair<string, string>> tickets;
+	tickets.push_back(make_pair("JFK", "SFO"));
+	tickets.push_back(make_pair("JFK", "ATL"));
+	tickets.push_back(make_pair("SFO", "ATL"));
+	tickets.push_back(make_pair("ATL", "JFK"));*/
+	//tickets.push_back(make_pair("ATL", "SFO"));
+	//findItinerary(tickets);
+	//vector<vector<int>> matrix;
+	//matrix.push_back({1,3,5,7});
+	//matrix.push_back({10,11,16,20});
+	//matrix.push_back({23,30,34,50});
+	//searchMatrix(matrix, 3);
+	//vector<int> nums = { 3,2,1,5,6,4 };
+	//int a = findKthLargest(nums, 2);
+	/*int a = 1;
+	int i = 0;
+	i = a++;
+	cout << i << endl; 1
+	i = ++a;
+	cout << i << endl; 3*/
+	vector<int> nums = { 3,2,1,5,6,4 };
+	wiggleSortII(nums);
 	return 0;
 }

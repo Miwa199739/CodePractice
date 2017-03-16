@@ -1,18 +1,35 @@
 ﻿  A.cpp
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(117): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(263): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(386): warning C4018: “>=”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(665): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(681): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(692): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(704): warning C4018: “>=”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(710): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(760): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(766): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(981): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(1016): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(1105): warning C4018: “<”: 有符号/无符号不匹配
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(961): warning C4715: “kthSmallest”: 不是所有的控件路径都返回值
-d:\miwa\offer\codepractice\codepractice\consoleapplication1\consoleapplication1\a.cpp(1070): warning C4715: “islandPerimeter”: 不是所有的控件路径都返回值
-  ConsoleApplication1.vcxproj -> D:\Miwa\offer\CodePractice\CodePractice\ConsoleApplication1\Debug\ConsoleApplication1.exe
-  ConsoleApplication1.vcxproj -> D:\Miwa\offer\CodePractice\CodePractice\ConsoleApplication1\Debug\ConsoleApplication1.pdb (Full PDB)
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(117): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(263): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(386): warning C4018: “>=”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(665): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(681): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(692): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(704): warning C4018: “>=”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(710): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(760): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(766): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(992): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1027): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1116): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1143): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1150): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1253): warning C4018: “>”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1256): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1257): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1262): warning C4018: “>”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1283): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1284): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1285): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1324): warning C4018: “>=”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1327): warning C4018: “>=”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1335): warning C4018: “>=”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1336): warning C4018: “>=”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1434): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1435): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1456): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1480): warning C4018: “<”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1482): warning C4018: “>”: 有符号/无符号不匹配
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\a.cpp(1081): warning C4715: “islandPerimeter”: 不是所有的控件路径都返回值
+  ConsoleApplication1.vcxproj -> D:\VisualStudio Projects\CodePractice\ConsoleApplication1\Debug\ConsoleApplication1.exe
+  ConsoleApplication1.vcxproj -> D:\VisualStudio Projects\CodePractice\ConsoleApplication1\Debug\ConsoleApplication1.pdb (Full PDB)

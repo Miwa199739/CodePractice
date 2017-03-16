@@ -53,20 +53,6 @@ void TopSort::Topological_sort() {
 
 
 //dijiesila算法
-/**
-从非工作节点里找一个节点，这个节点到源节点的距离最小
-*/
-int minDistance(int dist[], bool sptSet[]) {
-	int min = INT_MAX;
-	int min_index;
-	for (int v = 0; v < M; v++) {
-		if (sptSet[v] == false && dist[v] <= min) {
-			//如果这个节点还不在扫描过的节点集合里并且从源节点到这个节点的距离小于当前管理的最小的距离时
-			min = dist[v], min_index = v;
-		}
-	}
-	return min_index;
-}
 
 /**
 打印信息
@@ -100,6 +86,21 @@ void printRout(int parent[], int sourc) {
 			temp.pop();
 		}
 	}
+}
+
+/**
+从非工作节点里找一个节点，这个节点到源节点的距离最小
+*/
+int minDistance(int dist[], bool sptSet[]) {
+	int min = INT_MAX;
+	int min_index;
+	for (int v = 0; v < M; v++) {
+		if (sptSet[v] == false && dist[v] <= min) {
+			//如果这个节点还不在扫描过的节点集合里并且从源节点到这个节点的距离小于当前管理的最小的距离时
+			min = dist[v], min_index = v;
+		}
+	}
+	return min_index;
 }
 
 /**
