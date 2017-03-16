@@ -871,7 +871,7 @@ private:
 * int param_3 = obj.getRandom();
 */
 
-string intToString(int n) {
+string intToString(long long int n) {
 	stringstream ss;
 	ss << n;
 	return ss.str();
@@ -1138,6 +1138,7 @@ bool wordBreak(string s, vector<string>& wordDict) {
 }
 
 void findWordBreak(string s, vector<string>& wordDict, int start, vector<string>& result, vector<string>& str) {
+	//递归的终止条件，当s走到底了并且目前保存起来的
 	if (start == s.size() && !str.empty()) {
 		string temp = str[0];
 		for (int i = 1; i < str.size(); i++) {
@@ -1147,8 +1148,10 @@ void findWordBreak(string s, vector<string>& wordDict, int start, vector<string>
 	}
 	
 	string word;
+	//依次从s的首字母开始，一个一个加到word里
 	for (int i = start; i < s.size(); i++) {
 		word.push_back(s[i]);
+		//如果dict里存在word，那么接着往下找i+1以后的在不在
 		if (find(wordDict.begin(), wordDict.end(), word) != wordDict.end()) {
 			str.push_back(word);
 			findWordBreak(s, wordDict, i + 1, result, str);
@@ -1250,8 +1253,6 @@ vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, in
 	vector<pair<int, int>> res;
 	if (nums1.empty() && nums2.empty())
 		return res;
-	if (k > nums1.size() * nums2.size())
-		return res;
 
 	for (int i = 0; i < nums1.size(); i++) {
 		for (int j = 0; j < nums2.size(); j++) {
@@ -1317,7 +1318,6 @@ int maxDepth(TreeNode* root) {
 	return max(maxLength1, maxLength2);
 }
 
-
 //找两个数组合并后的第k小的数字
 double finKth(vector<int>& A,vector<int>& B,int A_st,int B_st,int k) {
 
@@ -1345,6 +1345,7 @@ double finKth(vector<int>& A,vector<int>& B,int A_st,int B_st,int k) {
 		return finKth(A, B, A_st, B_st + k / 2, k - k / 2);
 	}
 }
+
 //两个数组的中位数，用O(logmn)的复杂度
 double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
 	int sum = nums1.size() + nums2.size();
@@ -1539,10 +1540,114 @@ vector<string> fizzBuzz(int n) {
 //在从这个map里再初始化出每条线路与和他相邻线路的map
 //把start和end所在的线路找出来，然后用上面准备好的map，从start线路一直找到end线路
 
-
-int minTransfer() {
+void minTransfer() {
 
 }
+
+//设置一个哈希表，存储每一次的余数，以及该余数在返回结果result中的下标。
+//每一次得到新的余数，就查询该余数是否已经在哈希表中，是的话说明开始循环了，
+//那么直接在result中该余数对应的位置后面插入‘（’，result末尾加上‘）’，
+//结束运算。如果在哈希表中没找到，则继续正常运运算
+string fractionToDecimal(int numerator, int denominator) {
+	if (numerator == 0)
+		return "0";
+	string str = "";
+	if (numerator<0 ^ denominator<0)
+		str += "-";
+	//开始计算，转换成long long int
+	long long int numeratorNew = numerator;
+	numeratorNew = abs(numeratorNew);
+	long long int  denominatorNew = denominator;
+	denominatorNew = abs(denominatorNew);
+	str += intToString(numeratorNew / denominatorNew);
+	long long int r = (numeratorNew % denominatorNew);
+	if (r == 0)
+		return str;
+	else
+		str += ".";
+	unordered_map<int, int> myMap;
+	while (r) {
+		//已经开始循环了
+		if (myMap.find(r) != myMap.end()) {
+			str.insert(myMap[r], 1, '(');
+			str += ")";
+			break;
+		}
+
+		myMap[r] = str.size();
+		//继续计算
+		r *= 10;
+		str += intToString(r / denominatorNew);
+		r = r % denominatorNew;
+	}
+	return str;
+}
+
+//维护一个栈，从根节点开始，每次迭代地将根节点的左孩子压入栈，直到左孩子为空为止。
+//调用next()方法时，弹出栈顶，如果被弹出的元素拥有右孩子，则以右孩子为根，将其左孩子迭代压栈。
+class BSTIterator {
+public:
+	BSTIterator(TreeNode *root) {
+		TreeNode* node = root;
+		while (node) {
+			s.push(node);
+			node = node->left;
+		}
+	}
+
+	/** @return whether we have a next smallest number */
+	bool hasNext() {
+		return !s.empty();
+	}
+
+	/** @return the next smallest number */
+	int next() {
+		TreeNode * node = s.top();
+		int res = node->val;
+		s.pop();
+		node = node->right;
+		while (node) {
+			s.push(node);
+			node = node->left;
+		}
+		return res;
+	}
+private:
+	stack<TreeNode *> s;
+};
+
+
+void combineParenthesis(vector<string>& res, string& str, int depth, int n, int left, int right) {
+	if (depth == n * 2) {
+		res.push_back(str);
+		return;
+	}
+
+	if (left < n) {
+		str.push_back('(');
+		combineParenthesis(res, str, depth + 1, n,left + 1, right);
+		str.resize(str.size() - 1);
+	}
+
+	if (right < left) {
+		str.push_back(')');
+		combineParenthesis(res, str, depth + 1, n, left, right + 1);
+		str.resize(str.size() - 1);
+	}
+
+}
+
+//求n对括号的所有有效组合，类似于全排列，但是要加入有效括号的限制
+//一步步构造字符串。当左括号出现次数<n时，就可以放置新的左括号。当右括号出现次数小于左括号出现次数时，就可以放置新的右括号
+vector<string> generateParenthesis(int n) {
+	vector<string> res;
+	string str;
+	if (n != 0)
+		combineParenthesis(res, str, 0, n, 0, 0);
+	return res;
+}
+
+
 int main() {
 	//int T;
 	//string empty, line;
@@ -1611,7 +1716,8 @@ int main() {
 	cout << i << endl; 1
 	i = ++a;
 	cout << i << endl; 3*/
-	vector<int> nums = { 3,2,1,5,6,4 };
-	wiggleSortII(nums);
+	/*vector<int> nums = { 3,2,1,5,6,4 };
+	wiggleSortII(nums);*/
+	cout << fractionToDecimal(2147483648, 1) << endl;
 	return 0;
 }

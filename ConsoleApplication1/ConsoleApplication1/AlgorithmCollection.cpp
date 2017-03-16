@@ -373,8 +373,8 @@ UndirectedGraphNode* UndirectedGraphNode::cloneGraph(UndirectedGraphNode *node) 
 
 	//开辟新空间
 	UndirectedGraphNode *copy = new UndirectedGraphNode(node->label);
-	//源节点和克隆节点的map，为了避免元素被重复处理
-	map<UndirectedGraphNode*, UndirectedGraphNode*> cmap;
+	//源节点和克隆节点的map，避免重复创建复制节点
+	unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> cmap;
 	//用于广度优先搜索的queue
 	queue<UndirectedGraphNode*> graphQ;
 	//根节点入队列
@@ -387,25 +387,24 @@ UndirectedGraphNode* UndirectedGraphNode::cloneGraph(UndirectedGraphNode *node) 
 		//当前处理元素
 		UndirectedGraphNode* cur = graphQ.front();
 		graphQ.pop();
-		//当前元素的复制品,关键，这里的cur已经是在cmap里存在对应关系了的；
-		//除了根节点（curClone=copy）以外，所有的cur相当于上一循环的neighbor，因为是一层一层处理的，所以函数运行的这个位置时，cur的映射关系已经存在了
-		UndirectedGraphNode* curClone = cmap[cur];
-
 		//开始一个一个复制当前结点的邻居信息
-		for (int i = 0; i < node->neighbors.size(); i++) {
+		for (int i = 0; i < cur->neighbors.size(); i++) {
 			UndirectedGraphNode *neighbor = cur->neighbors[i];
-			UndirectedGraphNode* neighborClone;
 			//如果之前没有拷贝过
 			if (cmap.find(neighbor) == cmap.end()) {
-				neighborClone = new UndirectedGraphNode(neighbor->label);
+				UndirectedGraphNode* neighborClone = new UndirectedGraphNode(neighbor->label);
+				cmap[cur]->neighbors.push_back(neighborClone);
 				cmap.insert({ neighbor , neighborClone }); //对应一开始的UndirectedGraphNode* curClone = cmap[cur]
 				graphQ.push(neighbor);
 			}
-			curClone->neighbors.push_back(cmap[neighbor]);
+			else {
+				cmap[cur]->neighbors.push_back(cmap[neighbor]);
+			}
 		}
 	}
 	return copy;
 }
+
 int AlgorithmCollection::ladderLength(string start, string end, unordered_set<string> &dict) {
 	if (start == end)
 		return 1;
@@ -665,6 +664,7 @@ void AlgorithmCollection::solve(vector<vector<char>> &board) {
 	replace(board, 'Y', 'o');
 }
 
+//找最长连续子串
 int AlgorithmCollection::findLongestSequence(int a[], int size) {
 	unordered_set<int> mySet;
 	for (int i = 0; i < size; i++) {
@@ -678,7 +678,7 @@ int AlgorithmCollection::findLongestSequence(int a[], int size) {
 		int current = a[m];
 		int currentLength = 0;  //此次循环里对应的最大长度
 
-								//往前找
+		//往前找
 		while (mySet.count(current)) {
 			mySet.erase(current);
 			currentLength++;
@@ -763,7 +763,7 @@ int AlgorithmCollection::lengthOfLongestNonRepeatedSubs(string s) {
 	//return maxLength;
 
 	//解法三，解法二里visit长度我们只能固定，有可能会数组越界
-	//还是用以前的思路，找到一个重复的元素就把它以及他之前的元素删除，但该解法引述新的数据结构unordered_map
+	//还是用以前的思路，找到一个重复的元素就把它以及它之前的元素删除，但该解法引述新的数据结构unordered_map
 	unordered_map<char, int> ht;  //用hash实现的，内存占用多查找时间复杂度低，map用红黑树实现，内存占用少查找时间复杂度高
 	int maxlength = 0;
 	int curLength = 0;
