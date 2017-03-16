@@ -1647,6 +1647,63 @@ vector<string> generateParenthesis(int n) {
 	return res;
 }
 
+//求m个0和n个1能组成的最多的字符串个数
+//动态规划，所以我们需要建立一个二位的DP数组，其中dp[i][j]表示有i个0和j个1时能组成的最多字符串的个数，
+//而对于当前遍历到的字符串，我们统计出其中0和1的个数为zeros和ones，
+//然后dp[i - zeros][j - ones]表示当前的i和j减去zeros和ones之前能拼成字符串的个数，
+//那么加上当前的zeros和ones就是当前dp[i][j]可以达到的个数，我们跟其原有数值对比取较大值即可，所以递推式如下：
+//dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1);
+int findMaxForm(vector<string>& strs, int m, int n) {
+	vector<vector<int>> dp(m + 1, vector<int>(n+1, 0));
+	for (auto str : strs) {
+		int zeroes = 0, ones = 0;
+		//统计出当前字符串里用了多少个ones和zeroes
+		for (auto c : str)
+			(c == '0') ? zeroes++ : ones++;
+		for (int i = m; i >= zeroes; i--) {
+			for (int j = n; j >= ones; j--) {
+				dp[i][j] = max(dp[i][j], dp[i - zeroes][j - ones] + 1);
+			}
+		}
+	}
+	return dp[m][n];
+}
+
+
+/*设i为长度为i的各个位置上数字互不相同的数。
+i == 0 : 1
+i == 1 : 1 0（0~9共10个数，均不重复）
+i == 2 : 9 * 9 （第一个位置上除0外有9种选择，第2个位置上除第一个已经选择的数，还包括数字0，也有9种选择）
+i == 3 : 9 * 9 * 8 （前面两个位置同i == 2，第三个位置除前两个位置已经选择的数还有8个数可以用）
+……
+i == n : 9 * 9 * 8 * ……(9 - i + 2)*/
+int countNumbersWithUniqueDigits(int n) {
+	vector<int> dp(n + 1, 9);
+	dp[0] = 1;  //为什么
+	for (int i = 2; i <= n; i++) {
+		for (int j = 9; j > 9 - i + 2; j--) {
+			dp[i] *= j;
+		}
+	}
+	int count = 0;
+	for (auto a : dp)
+		count += a;
+	return count;
+}
+
+//我们一个整数n，然后让我们通过变换变为1，
+//如果n是偶数，我们变为n/2，如果是奇数，我们可以变为n+1或n-1，让我们求变为1的最少步骤。
+int integerReplacement(int n) {
+	if (n == 1)
+		return 0;
+	if (n % 2 == 0)
+		return 1 + integerReplacement(n / 2);
+	else {
+		long long int m = n;
+		//为什么是2，因为这里包括从m变为m-1的操作或m+1的操作
+		return 2 + min(integerReplacement((m - 1) / 2), integerReplacement((m + 1) / 2));
+	}
+}
 
 int main() {
 	//int T;
