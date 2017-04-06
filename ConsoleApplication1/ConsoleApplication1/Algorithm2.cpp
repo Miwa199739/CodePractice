@@ -894,7 +894,6 @@ int lengthOfLIS(vector<int>& nums) {
 }
 
 
-
 //把一个数的二进制表示翻转，再返回翻转后的数
 int reverseBits(int n) {
 	int y = 0;  //0000 0000 0000 0000 0000 0000

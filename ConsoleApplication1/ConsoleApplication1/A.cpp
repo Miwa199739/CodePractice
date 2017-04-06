@@ -1265,7 +1265,7 @@ vector<pair<int, int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, in
 	return res;
 }
 
-//升序比较器
+//降序比较器
 struct cmp {
 	bool operator() (pair<int, int>& a, pair<int, int> &b) {
 		return (a.first + a.second < b.first + b.second);
@@ -1691,8 +1691,8 @@ int countNumbersWithUniqueDigits(int n) {
 	return count;
 }
 
-//我们一个整数n，然后让我们通过变换变为1，
-//如果n是偶数，我们变为n/2，如果是奇数，我们可以变为n+1或n-1，让我们求变为1的最少步骤。
+//我们一个整数n，然后让我们通过变换变为1
+//如果n是偶数，我们变为n/2，如果是奇数，我们可以变为n+1或n-1，让我们求变为1的最少步骤
 int integerReplacement(int n) {
 	if (n == 1)
 		return 0;
@@ -1705,7 +1705,345 @@ int integerReplacement(int n) {
 	}
 }
 
-int main() {
+//树的周长
+int maxLength = 0;
+int diameterhelper(TreeNode* root) {
+	if (root == NULL)
+		return 0;
+
+	int left = diameterhelper(root->left);
+	int right = diameterhelper(root->right);
+
+	if (left + right > maxLength)
+		maxLength = left + right;
+
+	return max(left + 1, right + 1);
+}
+
+int diameterOfBinaryTree(TreeNode* root) {
+
+	if (root == NULL)
+		return 0;
+
+	diameterhelper(root);
+	return maxLength;
+}
+
+//根节点的值加上右节点的值，左节点的值加上根节点的值
+void dfsForConvertBST(TreeNode* node, int& sum) {
+	if (node == NULL)
+		return;
+	dfsForConvertBST(node->right, sum);
+	node->val += sum;
+	sum = node->val;
+	dfsForConvertBST(node->left, sum);
+}
+
+//更大的二叉树，右左中的遍历顺序，递归解法
+TreeNode* convertBST(TreeNode* root) {
+	if (root == NULL)
+		return root;
+	int sum = 0;
+	dfsForConvertBST(root, sum);
+	return root;
+}
+
+
+//更大的二叉树，右中左的遍历顺序,迭代解法
+TreeNode* convertBSTIterative(TreeNode* root) {
+	if (root == NULL)
+		return root;
+	int sum = 0;
+	stack<TreeNode*> stack;
+	TreeNode *p = root;
+	while (p || !stack.empty()) {
+		//把p的所有右节点一个一个push进去，先处理右节点
+		while (p) {
+			stack.push(p);
+			p = p->right;
+		}
+		//结点一个一个出栈
+		p = stack.top();
+		stack.pop();
+		p->val += sum;
+		sum = p->val;
+		p = p->left;
+	}
+	return root;
+}
+
+//一直往下找，不断更新当前的最大深度和最大深度对应的值
+void dfsBottomLeftValue(TreeNode* root, int depth, int& maxLength, int& value){
+	if (root == NULL)
+		return;
+
+	if (depth > maxLength) {
+		maxLength = depth;
+		value = root->val;
+	}
+
+	dfsBottomLeftValue(root->left, depth + 1, maxLength, value);
+	dfsBottomLeftValue(root->right, depth + 1, maxLength, value);
+
+}
+
+//找一棵树最左下方的数
+int findBottomLeftValue(TreeNode* root) {
+	if (root == NULL)
+		return 0;
+	int maxLength = 0;
+	int value = 0;
+	dfsBottomLeftValue(root,1,maxLength, value);
+	return value;
+}
+
+//找树每一行的最大值
+//广度优先，每一层都找出一个最大的
+vector<int> largestValues(TreeNode* root) {
+	vector<int> result;
+	if (root == NULL)
+		return result;
+
+	queue<TreeNode*> queue;
+	queue.push(root);
+	while (!queue.empty()) {
+		int n = queue.size();
+		int maxValue = 0;
+		for (int i = 0; i < n; i++) {
+			TreeNode* current = queue.front();
+			queue.pop();
+			if (current->val > maxValue) {
+				maxValue = current->val;
+			}
+			if(!current->left)
+				queue.push(current->left);
+			if(!current->right)
+				queue.push(current->right);
+		}
+		result.push_back(maxValue);
+	}
+	return result;
+}
+
+//找出现最频繁的子树之和，注意不是最频繁的字树，而是字树之和
+//用后序遍历，我们想下子树有何特点，必须是要有叶结点，单独的一个叶结点也可以当作是子树，那么子树是从下往上构建的，
+//这种特点很适合使用后序遍历，我们使用一个哈希表来建立子树和跟其出现频率的映射，用一个变量cnt来记录当前最多的次数，
+//递归函数返回的是以当前结点为根结点的子树结点值之和，然后在递归函数中，我们先对当前结点的左右子结点调用递归函数，
+//然后加上当前结点值，然后更新对应的哈希表中的值，然后看此时哈希表中的值是否大于等于cnt，大于的话首先要清空res，
+//等于的话不用，然后将sum值加入结果res中即可
+int postSum(TreeNode* root, unordered_map<int, int>& myMap, int& mostFreSum, vector<int>& res) {
+	if (root == NULL)
+		return 0;
+	int left = postSum(root->left, myMap, mostFreSum, res);
+	int right = postSum(root->right, myMap, mostFreSum, res);
+	int sum = left + right + root->val;
+
+	myMap[sum]++;
+	if (myMap[sum] >= mostFreSum) {
+		if (myMap[sum] > mostFreSum) res.clear();
+		res.push_back(sum);
+		mostFreSum = myMap[sum];
+	}
+
+	return sum;
+}
+
+vector<int> findFrequentTreeSum(TreeNode* root) {
+	if (root == NULL)
+		return{};
+	vector<int> res;
+	int mostFreSum = 0;
+	unordered_map<int, int> myMap;
+	postSum(root, myMap, mostFreSum, res);
+	return res;
+}
+
+//二叉树的中序遍历
+//左 - 中 - 右
+vector<int> inorderTraversal(TreeNode* root) {
+	if (!root)
+		return{};
+	vector<int> res;
+	stack<TreeNode*> stack;
+	TreeNode *p = root;
+	while (p || !stack.empty()) {
+		while (p) {
+			stack.push(p);
+			p = p->left;
+		}
+		p = stack.top();
+		stack.pop();
+		res.push_back(p->val);
+		p = p->right;
+	}
+	return res;
+}
+
+//二叉树的前序遍历
+//每个结点出去以后把他左右节点放进来
+//根 左 右
+vector<int> preorderTraversal(TreeNode* root) {
+	if (!root)
+		return{};
+	vector<int> res;
+	stack<TreeNode*> stack;
+	stack.push(root);
+	while (!stack.empty()) {
+		TreeNode *p = stack.top();
+		stack.pop();
+		res.push_back(p->val);
+		if (p->right) {
+			stack.push(p->right);
+		}
+		if (p->left) {
+			stack.push(p->left);
+		}
+	}
+	return res;
+}
+
+//二叉树的后序遍历
+//左 - 右 - 根
+vector<int> postorderTraversal(TreeNode* root) {
+	if (!root)
+		return{};
+	vector<int> res;
+	int sum = 0;
+	stack<TreeNode*> stack;
+	stack.push(root);
+	while (!stack.empty()) {
+		TreeNode *p = stack.top();
+		stack.pop();
+		res.insert(res.begin(), p->val);
+		if(p->left)
+			stack.push(p->left);
+		if (p->right)
+			stack.push(p->right);
+	}
+	return res;
+}
+
+int numberOfPath = 0;
+void dfsForPathSum(TreeNode* node, int cur, int sum) {
+	if (node == NULL)
+		return;
+
+	if (cur + node->val == sum)
+		numberOfPath++;
+
+	dfsForPathSum(node->left, cur + node->val, sum);
+	dfsForPathSum(node->right, cur + node->val, sum);
+
+	return;
+}
+
+int pathSum(TreeNode* root, int sum) {
+	if (root == NULL)
+		return 0;
+	stack<TreeNode*> myStack;
+	myStack.push(root);
+	while (!myStack.empty()) {
+		TreeNode* node = myStack.top();
+		myStack.pop();
+		dfsForPathSum(node, 0, sum);
+		if (node->left)
+			myStack.push(node->left);
+		if (node->right)
+			myStack.push(node->right);
+	}
+	return numberOfPath;
+}
+
+//求出能存储1-n的数的二叉搜索树的个数
+//T(i)表示有i个节点的BST的个数，则其左子树的个数为i-1，左子树的构建方法就有T(i-1)，则其右子树的个数为n-i，右子树的构建方法就有T(n-i)种
+//T(n) = T(0)*T(n-1)+T(1)*T(n-2)+T(2)*T(n-3)+...+T(n-1)*T(0)
+int numTrees(int n) {
+	vector<int> dp(n+1, 0);
+	if (n == 0 || n == 1 || n == 2)
+		return n;
+	dp[0] = 1;
+	dp[1] = 1;
+	for (int m = 2; m <= n; m++) {
+		for (int i = 1; i <= m; i++) {
+			dp[m] += dp[i - 1] * dp[m - i];
+		}
+	}
+	return dp[n];
+}
+
+vector<TreeNode*> getBST(int min, int max) {
+	vector<TreeNode*> res;
+	if (min > max) {
+		res.push_back(NULL);
+		return res;
+	}
+
+	for (int i = min; i <= max; i++) {
+		//以i为根节点，构建左右子树
+		vector<TreeNode*> leftSubTree = getBST(min, i - 1);
+		vector<TreeNode*> rightSubTree = getBST(i+1, max);
+		for (int j = 0; j < leftSubTree.size(); j++) {
+			for (int k = 0; k < rightSubTree.size(); k++) {
+				TreeNode *root = new TreeNode(i);
+				root->left = leftSubTree[j];
+				root->right = rightSubTree[k];
+				res.push_back(root);
+			}
+		}
+	}
+
+	return res;
+}
+
+
+//求出所有能存储1-n的数的二叉搜索树
+//1. 根节点可以任取min ~max(例如min = 1, max = n)，假如取定为i。
+//2. 则left subtree由min ~i - 1组成，假设可以有L种可能。right subtree由i + 1 ~max组成，假设有R种可能。生成所有可能的left / right subtree。
+//3 对于每个生成的left subtree / right subtree组合<T_left(p), T_right(q)>，p = 1...L，q = 1...R，添加上根节点i而组成一颗新树。
+vector<TreeNode*> generateTrees(int n) {
+	if (n == 0)
+		return{};
+	return getBST(1, n);
+}
+
+
+//返回多项式的不同加括号的结果集合
+//((2 - 1) - 1) = 0
+//(2 - (1 - 1)) = 2
+//对于操作符，划分左右子树，递归的求
+vector<int> getResult(string input) {
+	vector<int> res;
+	for (int i = 0; i < input.size(); i++) {
+		if (input[i] == '+' || input[i] == '-' || input[i] == '*') {
+			vector<int> leftSubResult = getResult(input.substr(0, i));
+			vector<int> rightSubResult = getResult(input.substr(i+1));
+			for (int j = 0; j < leftSubResult.size(); j++) {
+				for (int k = 0; k < rightSubResult.size(); k++) {
+					if (input[i] == '+')
+						res.push_back(leftSubResult[j] + rightSubResult[k]);
+					else if (input[i] == '-')
+						res.push_back(leftSubResult[j] - rightSubResult[k]);
+					else
+						res.push_back(leftSubResult[j] * rightSubResult[k]);
+				}
+			}
+		}
+	}
+	//如果是数字
+	if (res.empty())
+		res.push_back(atoi(input.c_str()));
+	return res;
+}
+
+
+vector<int> diffWaysToCompute(string input) {
+	vector<int> res = getResult(input);
+	sort(res.begin(), res.end());
+	return res;
+}
+
+
+//int main() {
 	//int T;
 	//string empty, line;
 	//int ROW, COL;
@@ -1775,6 +2113,24 @@ int main() {
 	cout << i << endl; 3*/
 	/*vector<int> nums = { 3,2,1,5,6,4 };
 	wiggleSortII(nums);*/
-	cout << fractionToDecimal(2147483648, 1) << endl;
-	return 0;
-}
+	//cout << fractionToDecimal(2147483648, 1) << endl;
+	/*TreeNode *root = new TreeNode(10);
+	TreeNode *root1 = new TreeNode(5);
+	TreeNode *root2 = new TreeNode(-3);
+	TreeNode *root3 = new TreeNode(3);
+	TreeNode *root4 = new TreeNode(2);
+	TreeNode *root5 = new TreeNode(11);
+	TreeNode *root6 = new TreeNode(3);
+	TreeNode *root7 = new TreeNode(-2);
+	TreeNode *root8 = new TreeNode(1);
+	root->left = root1;
+	root->right = root2;
+	root1->left = root3;
+	root1->right = root4;
+	root2->right = root5;
+	root3->left = root6;
+	root3->right = root7;
+	root4->right = root8;
+	pathSum(root,8);*/
+//	return 0;
+//}

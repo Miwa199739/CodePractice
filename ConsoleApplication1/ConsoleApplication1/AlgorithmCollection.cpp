@@ -16,8 +16,6 @@ AlgorithmCollection::AlgorithmCollection() {
 }
 
 int AlgorithmCollection::binSearch(int m[], int low, int high, int target) {
-
-	//sizeof(m) / sizeof(m[0]) - 1;
 	int mid;
 	while (low <= high) {
 		mid = (low + high) / 2;
@@ -51,6 +49,8 @@ void AlgorithmCollection::insertSorting(int m[], int length) {
 }
 
 //利用二分查找的插入排序
+//最好时间复杂度O(n)和最坏时间复杂度0(n^2)
+//平均情况，都要进行后移操作，O(n^2)
 void AlgorithmCollection::insertSortingByBinSearch(int m[], int length) {
 	int temp;
 	int k;
@@ -70,6 +70,7 @@ void AlgorithmCollection::insertSortingByBinSearch(int m[], int length) {
 }
 
 //内层循环比较相邻的两个元素，前面的大于后面的就交换，每次都把最大的数放到数组尾部，外层循环遍历整个数组
+//O(n^2)
 void AlgorithmCollection::bubbleSort(int m[], int length)
 {
 	int temp;
@@ -84,47 +85,7 @@ void AlgorithmCollection::bubbleSort(int m[], int length)
 	}
 }
 
-int AlgorithmCollection::partion(int m[], int left, int right) {
-	int storeIndexLeft = left;  //left指针
-	int storeIndexRight = right; //right指针
-	int flag = 0;
-	int pivot = m[right]; //记录最右边的元素为枢纽
-	while (storeIndexLeft != storeIndexRight) {
-		if (flag == 0) {
-			if (m[storeIndexLeft] > pivot) {
-				m[storeIndexRight] = m[storeIndexLeft];//比枢纽大的通通移动到右边
-				storeIndexRight--;//右指针往回退一步
-				flag = 1;//开始判断右指针与pivot的关系
-			}
-			else
-				storeIndexLeft++; //left往前移一步
-		}
-		else {
-			if (m[storeIndexRight] < pivot) {
-				m[storeIndexLeft] = m[storeIndexRight]; //比枢纽小的通通移动到右边
-				storeIndexLeft++;//左指针往前进一步
-				flag = 0;//开始判断左指针与pivot的关系
-			}
-			else
-				storeIndexRight--; //left往前移一步
-		}
-	}
-	m[storeIndexLeft] = pivot;
-	return storeIndexLeft;  //返回枢纽位置
-}
-
-void AlgorithmCollection::quickSort(int m[], int left, int right) {
-	if (left > right)
-		return;
-	int storeIndex;
-	storeIndex = partion(m, left, right);  //第一次划分
-	quickSort(m, left, storeIndex - 1);
-	quickSort(m, storeIndex + 1, right);
-}
-
-
-//快速排序高级解法来自王小明
-void quicksortAdvanced(int a[], int low, int high)
+void quicksort(int a[], int low, int high)
 {
 	if (low < high)
 	{
@@ -146,8 +107,84 @@ void quicksortAdvanced(int a[], int low, int high)
 				a[i++] = a[j];
 		}
 		a[i] = x;
-		quicksortAdvanced(a, low, i - 1);
-		quicksortAdvanced(a, i + 1, high);
+		quicksort(a, low, i - 1);
+		quicksort(a, i + 1, high);
+	}
+}
+
+
+void shell(int a[], int length) {
+	int gap = length / 2;  //gap是增量
+	while (gap > 0) {
+		for (int i = gap; i < length; i++) {
+			int temp = a[i];
+			int j = i - gap;
+			for (int j = i - gap; j >= 0 && a[j] > a[i]; j -= gap) { //两两对比的元素之间跨度为gap
+				a[j + gap] = a[j];
+			}
+			//跳出循环时j=i-gap-gap,j+gap是temp的最终位置
+			a[j + gap] = temp;
+		}
+		gap /= 2;
+	}
+}
+
+
+//堆排序
+int arrs[] = { 23, 65, 12, 3, 8, 76, 345, 90, 21, 75, 34, 61 };
+int arrLen = sizeof(arrs) / sizeof(arrs[0]);
+void adjustHeap(int * arrs, int p, int len) {
+	int curParent = arrs[p];
+	int child = 2 * p + 1;   //左孩子
+	while (child < len) {
+		//找到较大子节点的下标
+		if (child + 1 < len && arrs[child]<arrs[child + 1]){
+			child++; 
+		}
+		//较大子节点与父节点比较
+		if (curParent < arrs[child]) { //父节点小宇子节点，将子节点赋值给父节点
+			arrs[p] = arrs[child];
+			p = child;
+			child = 2 * p + 1;
+		}
+		else
+			break;
+	}
+	arrs[p] = curParent;
+}
+
+void heapSort(int * arrs, int len) {
+	//建立堆，从最底层的父节点开始
+	for (int i = arrLen / 2 - 1; i >= 0; i--)
+		adjustHeap(arrs, i, arrLen);
+	for (int i = arrLen - 1; i >= 0; i--) {
+		int maxEle = arrs[0];
+		arrs[0] = arrs[i];
+		arrs[i] = maxEle;
+
+		adjustHeap(arrs, 0, i);
+	}
+}
+
+//计数排序
+//扫描序列A，以A中的每个元素的值为索引，把出现的个数填入C中。此时C[i]可以表示A中值为i的元素的个数。
+//对于C从头开始累加，使C[i]<-C[i] + C[i - 1]。这样，C[i]就表示A中值不大于i的元素的个数。
+//按照统计出的值，输出结果。
+//由线性表C我们可以很方便地求出排序后的数据，定义B为目标的序列，Order[i]为排名第i的元素在A中的位置，则可以用以下方法统计。
+void CountingSort(int *A, int *B, int *Order, int N, int K)
+{
+	int *C = new int[K + 1];
+	int i;
+	memset(C, 0, sizeof(int)*(K + 1));
+	for (i = 1; i <= N; i++) //把A中的每个元素分配
+		C[A[i]]++;
+	for (i = 2; i <= K; i++) //统计不大于i的元素的个数
+		C[i] += C[i - 1];
+	for (i = N; i >= 1; i--)
+	{
+		B[C[A[i]]] = A[i]; //按照统计的位置，将值输出到B中，将顺序输出到Order中
+		Order[C[A[i]]] = i;
+		C[A[i]]--;
 	}
 }
 
@@ -1011,4 +1048,12 @@ system("pause");
 return 0;
 }
 */
+
+int main()
+{
+	heapSort(arrs, arrLen);
+	for (int i = 0; i < arrLen; i++)
+		cout << arrs[i] << endl;
+	return 0;
+}
 
