@@ -1043,17 +1043,11 @@ vec2[1] = 1;
 string s = "abcabcbb";
 string s2 = "pwwkew";
 cout << lengthOfLongestNonRepeatedSubs(s);
-
+heapSort(arrs, arrLen);
+for (int i = 0; i < arrLen; i++)
+cout << arrs[i] << endl;
 system("pause");
 return 0;
 }
 */
-
-int main()
-{
-	heapSort(arrs, arrLen);
-	for (int i = 0; i < arrLen; i++)
-		cout << arrs[i] << endl;
-	return 0;
-}
 
