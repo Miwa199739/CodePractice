@@ -319,6 +319,7 @@ ListNode* removeNthFromEnd(ListNode* head, int n) {
 	return head;
 }
 
+//merge两个有序list
 ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
 	ListNode* head = new ListNode(0);
 	ListNode* res = head;
@@ -411,6 +412,154 @@ vector<int> prime(int n) {
 	return res;
 }
 
+//判断两个链表的交点开始处
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+	if (!headA)
+		return NULL;
+	if (!headB)
+		return NULL;
+	int sizeA = 0, sizeB = 0;
+	ListNode * A = headA;
+	ListNode * B = headB;
+	while (A->next && B->next) {
+		sizeA++;
+		sizeB++;
+		A = A->next;
+		B = B->next;
+	}
+	while (A->next) {
+		sizeA++;
+		A = A->next;
+	}
+	while (B->next) {
+		sizeB++;
+		B = B->next;
+	}
+	A = headA;
+	B = headB;
+	int diff = 0;
+	if (sizeB > sizeA) {
+		diff = sizeB - sizeA;
+		while (diff > 0) {
+			diff--;
+			B = B->next;
+		}
+		A = headA;
+	}
+	else {
+		diff = sizeA - sizeB;
+		while (diff > 0) {
+			diff--;
+			A = A->next;
+		}
+		B = headB;
+	}
+	while (A && B) {
+		if (A == B)
+			break;
+		A = A->next;
+		B = B->next;
+	}
+	return A;
+}
+
+//判断链表里是否有环
+bool hasCycle(ListNode *head) {
+	if (!head)
+		return NULL;
+	ListNode* slow = head;
+	ListNode* fast = head;
+	while (fast->next && fast->next->next) {
+		slow = slow->next;
+		fast = fast->next->next;
+		if (slow == fast) 
+			return true;
+	}
+	return NULL;
+}
+
+//返回环开始的位置
+ListNode *detectCycle(ListNode *head) {
+	if (!head)
+		return NULL;
+	ListNode* slow = head;
+	ListNode* fast = head;
+	while (fast->next && fast->next->next) {
+		slow = slow->next;
+		fast = fast->next->next;
+		if (slow == fast) {
+			slow = head;
+			while (slow != fast) {
+				slow = slow->next;
+				fast = fast->next;
+			}
+			return slow;
+		}
+	}
+	return NULL;
+}
+
+//奇数位在一起，偶数位在一起
+ListNode* oddEvenList(ListNode* head) {
+	if (!head || !head->next)
+		return head;
+	ListNode* oddAC = head;
+	ListNode* evenAC = head->next;
+	ListNode* odd = head;
+	ListNode* even = head->next;
+	while (oddAC->next && oddAC->next->next) {
+		oddAC->next = oddAC->next->next;
+		oddAC = oddAC->next;
+		if (evenAC->next && evenAC->next->next) {
+			evenAC->next = evenAC->next->next;
+			evenAC = evenAC->next;
+		}
+	}
+	oddAC->next = even;
+	evenAC->next = NULL;
+	return head;
+}
+
+//删除重复元素
+ListNode* deleteDuplicates(ListNode* head) {
+	if (!head)
+		return head;
+	ListNode* active = head;
+	while (active) {
+		if (active->next){
+			if (active->val == active->next->val) {
+				active->next = active->next->next;
+			}else
+				active = active->next;
+		}
+		else
+			break;
+	}
+	return head;
+}
+
+//删除所有重复元素
+ListNode* deleteDuplicatesII(ListNode* head) {
+	if (!head)
+		return head;
+	if (!head->next)
+		return head;
+	ListNode* active = head;
+	ListNode* dummy = new ListNode(-1);
+	ListNode* slow = dummy;
+	while (active) {
+		if (active->next && active->val == active->next->val) {
+			ListNode * temp = active;
+			while (temp && temp->val == active->val) {
+				temp = temp->next;
+			}
+			active = temp;
+		}
+		else
+			active = active->next;
+	}
+	return head;
+}
 
 int main() {
 	//freopen("C:/Users/Miwa/Desktop/a.txt", "r", stdin);
@@ -448,16 +597,26 @@ int main() {
 	//cout << numOfPara << " " << sum << endl;
 	//vector<int> para = { -1,0,1,2,-1,-4 };
 	//threeSum(para);
-	//ListNode * l11 = new ListNode(2);
-	//ListNode * l12 = new ListNode(4);
-	//ListNode * l13 = new ListNode(3);
-	//l11->next = l12;
-	//l12->next = l13;
-	//l13->next = NULL;
+	ListNode * l11 = new ListNode(1);
+	ListNode * l12 = new ListNode(2);
+	ListNode * l13 = new ListNode(3);
+	ListNode * l14 = new ListNode(4);
+	ListNode * l15 = new ListNode(5);
+	ListNode * l16 = new ListNode(6);
+	ListNode * l17 = new ListNode(7);
+	ListNode * l18 = new ListNode(8);
+	l11->next = l12;
+	l12->next = l13;
+	l13->next = l14;
+	l14->next = l15;
+	l15->next = l16;
+	l16->next = l17;
+	l17->next = l18;
+	l18->next = NULL;
 	//ListNode * l21 = new ListNode(5);
 	//ListNode * l22 = new ListNode(6);
 	//ListNode * l23 = new ListNode(4);
-	//l21->next = l22;
+	//l21->next = NULL;
 	//l22->next = l23;
 	//l23->next = NULL;
 	//addTwoNumbers(l11, l21);
@@ -465,7 +624,9 @@ int main() {
 	//ListNode * l2 = new ListNode(5);
 	//mergeTwoLists(l1, l2);
 
-	vector<int> vec = prime(20);
-	for (auto a : vec)
-		cout << a << endl;
+	//vector<int> vec = prime(20);
+	//for (auto a : vec)
+		//cout << a << endl;
+	//getIntersectionNode(l11, l21);
+	oddEvenList(l11);
 }

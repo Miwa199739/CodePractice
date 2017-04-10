@@ -2083,31 +2083,31 @@ TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
 }
 
 
-TreeNode* buildTreeHelperII(vector<int>& preorder, int preL, int preR, vector<int>& inorder, int inL, int inR, map<int, int>& myMap) {
-	if (preL > preR || inL > inR)
+TreeNode* buildTreeHelperII(vector<int>& postorder, int postL, int postR, vector<int>& inorder, int inL, int inR, map<int, int>& myMap) {
+	if (postL > postR || inL > inR)
 		return NULL;
-	TreeNode* root = new TreeNode(preorder[preL]);
-	int indexIn = myMap[preorder[preL]];
-	root->left = buildTreeHelper(preorder, preL + 1, preL + indexIn - inL, inorder, inL, indexIn - 1, myMap);
-	root->right = buildTreeHelper(preorder, preL + indexIn - inL + 1, preR, inorder, indexIn + 1, inR, myMap);
+	TreeNode* root = new TreeNode(postorder[postR]);
+	int indexIn = myMap[postorder[postR]];
+	root->right = buildTreeHelperII(postorder, postL + indexIn - inL, postR - 1, inorder, indexIn + 1, inR, myMap);
+	root->left = buildTreeHelperII(postorder, postL, postL + indexIn - inL - 1, inorder, inL, indexIn - 1, myMap);
 	return root;
 }
 
-//根据后序和中序构造二叉树
-TreeNode* buildTreeII(vector<int>& preorder, vector<int>& inorder) {
-	int sizePre = preorder.size();
+//根据中序和后序构造二叉树
+TreeNode* buildTreeII(vector<int>& inorder, vector<int>& postorder) {
 	int sizeIn = inorder.size();
-	if (sizePre == 0 || sizeIn == 0)
+	int sizePost = postorder.size();
+	if (sizePost == 0 || sizeIn == 0)
 		return NULL;
-	if (sizePre != sizeIn)
+	if (sizePost != sizeIn)
 		return NULL;
 	map<int, int> myMap;
 	for (int i = 0; i < sizeIn; i++)
 		myMap[inorder[i]] = i;
-	return buildTreeHelperII(preorder, 0, sizePre - 1, inorder, 0, sizeIn - 1, myMap);
+	return buildTreeHelperII(postorder, 0, sizePost - 1, inorder, 0, sizeIn - 1, myMap);
 }
 
-int main() {
+//int main() {
 	//int T;
 	//string empty, line;
 	//int ROW, COL;
@@ -2196,11 +2196,11 @@ int main() {
 	root3->right = root7;
 	root4->right = root8;
 	pathSum(root,8);*/
-	TreeNode *root7 = new TreeNode(-1);
-	TreeNode *root8 = new TreeNode(-1);
-	//isSameTree(root7, root8);
-	vector<int> vec1 = { -1 };
-	vector<int> vec2 = { -1 };
-	buildTree(vec1, vec2);
-	return 0;
-}
+//	TreeNode *root7 = new TreeNode(-1);
+//	TreeNode *root8 = new TreeNode(-1);
+//	//isSameTree(root7, root8);
+//	vector<int> vec1 = { -1 };
+//	vector<int> vec2 = { -1 };
+//	buildTree(vec1, vec2);
+//	return 0;
+//}

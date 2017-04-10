@@ -16,7 +16,7 @@ AlgorithmCollection::AlgorithmCollection() {
 }
 
 int AlgorithmCollection::binSearch(int m[], int low, int high, int target) {
-	int mid;
+	int mid = 0;
 	while (low <= high) {
 		mid = (low + high) / 2;
 		if (target < m[mid]) {
@@ -1051,8 +1051,6 @@ return 0;
 }
 */
 
-<<<<<<< Updated upstream
-=======
 //int main()
 //{
 //	heapSort(arrs, arrLen);
@@ -1060,5 +1058,3 @@ return 0;
 //		cout << arrs[i] << endl;
 //	return 0;
 //}
-
->>>>>>> Stashed changes
