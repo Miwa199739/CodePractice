@@ -1,0 +1,35 @@
+﻿  A.cpp
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(258): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(284): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(294): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(316): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(355): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(366): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(391): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(500): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(614): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(841): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(882): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1064): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1065): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1086): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1105): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1126): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1211): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1351): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1442): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1455): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1504): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1515): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1555): warning C4554: “^”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1571): warning C4244: “参数”: 从“__int64”转换到“const int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1572): warning C4244: “参数”: 从“__int64”转换到“const int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1577): warning C4244: “参数”: 从“__int64”转换到“const int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1577): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1704): warning C4244: “参数”: 从“__int64”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1810): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(2073): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(2074): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\a.cpp(1081): warning C4715: “islandPerimeter”: 不是所有的控件路径都返回值
+  ConsoleApplication1.vcxproj -> D:\Miwa\offer\CodePractice\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
+  ConsoleApplication1.vcxproj -> D:\Miwa\offer\CodePractice\ConsoleApplication1\x64\Debug\ConsoleApplication1.pdb (Full PDB)

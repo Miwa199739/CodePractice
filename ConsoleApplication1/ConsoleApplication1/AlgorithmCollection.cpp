@@ -1051,3 +1051,14 @@ return 0;
 }
 */
 
+<<<<<<< Updated upstream
+=======
+//int main()
+//{
+//	heapSort(arrs, arrLen);
+//	for (int i = 0; i < arrLen; i++)
+//		cout << arrs[i] << endl;
+//	return 0;
+//}
+
+>>>>>>> Stashed changes

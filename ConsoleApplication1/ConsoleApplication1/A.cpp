@@ -2042,8 +2042,72 @@ vector<int> diffWaysToCompute(string input) {
 	return res;
 }
 
+//判断两个树是否相等,注意这里是判断val是否相等，不能直接两个指针p==q这样判断
+bool isSameTree(TreeNode* p, TreeNode* q) {
+	if (!p && !q)
+		return true;
+	else if (!p && q)
+		return false;
+	else if (p && !q)
+		return false;
+	else{
+		if (p->val == q->val)
+			return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+		else
+			return false;
+	}
+}
 
-//int main() {
+TreeNode* buildTreeHelper(vector<int>& preorder, int preL, int preR,vector<int>& inorder,int inL, int inR, map<int, int>& myMap) {
+	if (preL > preR || inL > inR)
+		return NULL;
+	TreeNode* root = new TreeNode(preorder[preL]);
+	int indexIn = myMap[preorder[preL]];
+	root->left = buildTreeHelper(preorder, preL + 1, preL + indexIn - inL, inorder, inL, indexIn - 1, myMap);
+	root->right = buildTreeHelper(preorder, preL + indexIn - inL + 1, preR, inorder, indexIn+1, inR, myMap);
+	return root;
+}
+
+//根据前序和中序构造二叉树
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+	int sizePre = preorder.size();
+	int sizeIn = inorder.size();
+	if (sizePre == 0 || sizeIn == 0)
+		return NULL;
+	if (sizePre != sizeIn)
+		return NULL;
+	map<int, int> myMap;
+	for (int i = 0; i < sizeIn; i++)
+		myMap[inorder[i]] = i;
+	return buildTreeHelper(preorder, 0, sizePre - 1, inorder, 0, sizeIn - 1, myMap);
+}
+
+
+TreeNode* buildTreeHelperII(vector<int>& preorder, int preL, int preR, vector<int>& inorder, int inL, int inR, map<int, int>& myMap) {
+	if (preL > preR || inL > inR)
+		return NULL;
+	TreeNode* root = new TreeNode(preorder[preL]);
+	int indexIn = myMap[preorder[preL]];
+	root->left = buildTreeHelper(preorder, preL + 1, preL + indexIn - inL, inorder, inL, indexIn - 1, myMap);
+	root->right = buildTreeHelper(preorder, preL + indexIn - inL + 1, preR, inorder, indexIn + 1, inR, myMap);
+	return root;
+}
+
+//根据后序和中序构造二叉树
+TreeNode* buildTreeII(vector<int>& preorder, vector<int>& inorder) {
+	int sizePre = preorder.size();
+	int sizeIn = inorder.size();
+	if (sizePre == 0 || sizeIn == 0)
+		return NULL;
+	if (sizePre != sizeIn)
+		return NULL;
+	map<int, int> myMap;
+	for (int i = 0; i < sizeIn; i++)
+		myMap[inorder[i]] = i;
+	return buildTreeHelperII(preorder, 0, sizePre - 1, inorder, 0, sizeIn - 1, myMap);
+}
+
+int main() {
 	//int T;
 	//string empty, line;
 	//int ROW, COL;
@@ -2132,5 +2196,11 @@ vector<int> diffWaysToCompute(string input) {
 	root3->right = root7;
 	root4->right = root8;
 	pathSum(root,8);*/
-//	return 0;
-//}
+	TreeNode *root7 = new TreeNode(-1);
+	TreeNode *root8 = new TreeNode(-1);
+	//isSameTree(root7, root8);
+	vector<int> vec1 = { -1 };
+	vector<int> vec2 = { -1 };
+	buildTree(vec1, vec2);
+	return 0;
+}
