@@ -544,21 +544,42 @@ ListNode* deleteDuplicatesII(ListNode* head) {
 		return head;
 	if (!head->next)
 		return head;
-	ListNode* active = head;
 	ListNode* dummy = new ListNode(-1);
-	ListNode* slow = dummy;
-	while (active) {
-		if (active->next && active->val == active->next->val) {
-			ListNode * temp = active;
-			while (temp && temp->val == active->val) {
-				temp = temp->next;
-			}
-			active = temp;
-		}
+	dummy->next = head;
+	ListNode* fast = dummy;
+	while (fast->next) {
+		ListNode* cur = fast->next;
+		while (cur && cur->next && cur->val == cur->next->val)
+			cur = cur->next;
+		if (cur != fast->next)
+			fast->next = cur->next;
 		else
-			active = active->next;
+			fast = fast->next;
 	}
-	return head;
+	return dummy->next;
+}
+
+//n个抽屉放n+1个数，找出那个重复的元素
+int findDuplicate(vector<int>& nums) {
+	int n = nums.size() - 1;
+	if (n <= 0)
+		return 0;
+	int min = 0;
+	int max = n;
+	int mid = 0;
+	while (min <= max) {
+		mid = min + (max - min) / 2;
+		int cnt = 0;
+		for (int i = 0; i <= n; i++) {
+			if (nums[i] <= mid)
+				cnt++;
+		}
+		if (cnt > mid)
+			max = mid - 1;
+		else
+			min = mid + 1;
+	}
+	return min;
 }
 
 int main() {
