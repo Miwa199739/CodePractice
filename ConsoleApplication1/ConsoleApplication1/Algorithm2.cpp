@@ -463,49 +463,6 @@ bool canFinishIterative(int numCourses, vector<pair<int, int>>& prerequisites) {
 	return true;
 }
 
-//安排课程顺序错误解法，没有考虑这是有向图
-bool canFinishRecursion(int numCourses, vector<pair<int, int>>& prerequisites) {
-	//二维数组存储有向图
-	vector<vector<int> > myVector(numCourses, vector<int>(0));
-	//初始化
-	for (auto a : prerequisites) {
-		myVector[a.second].push_back(a.first);
-	}
-	int i = 0;
-	while (i < numCourses) {
-		//判断一个节点是否访问过,初始化为false;
-		vector<bool> visited(numCourses, false);
-		//判断一个节点是否已经入栈；
-		vector<bool> inQueue(numCourses, false);
-		stack<int> myQueue;
-		myQueue.push(i);
-		inQueue[i] = true;
-		while (!myQueue.empty()) {
-			int current = myQueue.top();
-			myQueue.pop();
-			inQueue[current] = false;
-			visited[current] = true;
-			for (auto a : myVector[current]) {
-				//注意：这里的判断除了过滤掉了环，还过滤掉了连在一起的几个元素但没构成环的，注意环是有向的，这里过滤掉了无向的环
-				//所以应该换一种解法
-				if (visited[a]) {
-					bool res = false;
-					//加条件，从a出去的边不到已经为true的那些点
-					//34/37个用例，不知道问题在哪里，改用另外一种方法吧
-					for (auto m : myVector[a]) {
-						res |= visited[m];
-					}
-					if (res)
-						return false;
-				}
-				myQueue.push(a);
-			}
-		}
-		i++;
-	}
-	return true;
-}
-
 bool canFinishRecursionHelper(vector<vector<int> > &myVector, vector<int> &visited, int i) {
 	if (visited[i] == -1)  //已经访问过了，再次访问就说明是回路
 		return false;
@@ -520,8 +477,8 @@ bool canFinishRecursionHelper(vector<vector<int> > &myVector, vector<int> &visit
 	return true;
 }
 
-//安排课程顺序,递归解法，参考别人的
-bool canFinishRecursionReference(int numCourses, vector<pair<int, int>>& prerequisites) {
+//安排课程顺序,递归解法
+bool canFinishRecursion(int numCourses, vector<pair<int, int>>& prerequisites) {
 	//二维数组存储有向图
 	vector<vector<int> > myVector(numCourses, vector<int>(0));
 	//初始化
@@ -538,6 +495,81 @@ bool canFinishRecursionReference(int numCourses, vector<pair<int, int>>& prerequ
 	}
 	return true;
 }
+
+
+vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+	//结果集
+	vector<int> res;
+	//二维数组存储有向图
+	vector<vector<int>> myVector(numCourses, vector<int>(0));
+	//存储每个节点的出度
+	vector<int> in(numCourses, 0);
+
+	//初始化
+	for (auto a : prerequisites) {
+		myVector[a.second].push_back(a.first);
+		in[a.first]++;
+	}
+
+	queue<int> myQueue;
+
+	//把所有出度为0的点push进去，这些课的优先级最高
+	for (int i = 0; i < numCourses; i++) {
+		if (in[i] == 0)
+			myQueue.push(i);
+	}
+
+	//开始BFS
+	while (!myQueue.empty()) {
+		int current = myQueue.front();
+		res.push_back(current);
+		myQueue.pop();
+		for (auto a : myVector[current]) {
+			in[a]--;
+			//出度为0，为叶子结点
+			if (in[a] == 0)
+				myQueue.push(a);
+		}
+	}
+
+	if (res.size() != numCourses)
+		res.clear();
+
+	return res;
+}
+
+//递归完成
+//初始化图，生成图
+vector<unordered_set<int>> make_graph(int numCourses, vector<pair<int, int>> &prerequisites) {
+	vector<unordered_set<int>> graph(numCourses);
+	for (auto pre : prerequisites) {
+		graph[pre.second].insert(pre.first);
+	}
+	return graph;
+}
+//递归完成遍历
+bool dfs(vector<unordered_set<int>> &graph, int node, vector<bool> &onpath, vector<bool> &visited, vector<int> &toposort) {
+	if (visited[node]) return false;
+	onpath[node] = visited[node] = true;
+	for (int neigh : graph[node])
+		if (onpath[neigh] || dfs(graph, neigh, onpath, visited, toposort))
+			return true;//这也是不存在路径的条件
+	toposort.push_back(node);
+	return onpath[node] = false;
+}
+
+vector<int> findOrderRecursion(int numCourses, vector<pair<int, int>>& prerequisites) {
+	vector<unordered_set<int>> graph = make_graph(numCourses, prerequisites);
+	vector<int> toposort;
+	vector<bool> onpath(numCourses, false), visited(numCourses, false);
+	for (int i = 0; i < numCourses; i++) {
+		if (!visited[i] && dfs(graph, i, onpath, visited, toposort))
+			return{};
+	}
+	reverse(toposort.begin(), toposort.end());
+	return toposort;
+}
+
 
 //只翻转元音字母
 string reverseVowels(string s) {
@@ -754,6 +786,33 @@ string commonLongestSubstringWithDP(string &a, string &b) {
 	}
 	return result;
 }
+
+//求两个文本之间的差距，可以用LCS来做
+int min(int a, int b, int c)
+{
+	return (a<b ? a : b)<c ? (a<b ? a : b) : c;
+}
+
+int LD(char pa[], char pb[], int a_length, int b_length)
+{
+	int dis[10000][10000];
+	int i = 0, j = 0;
+	for (i = 0; i <= a_length; i++)
+		dis[i][0] = i;
+	for (j = 1; j <= b_length; j++)
+		dis[0][j] = j;
+	for (i = 1; i <= a_length; i++)
+		for (j = 1; j <= b_length; j++)
+		{
+			if (pa[i - 1] == pb[j - 1])
+				dis[i][j] = dis[i - 1][j - 1];
+			else
+				dis[i][j] = min(dis[i - 1][j], dis[i - 1][j - 1], dis[i][j - 1]) + 1;
+		}
+	return dis[a_length][b_length];
+}
+
+
 
 //返回最长回文子串
 //想法：把字符串翻转，最长回文串就是原字符串与翻转后字符串的最长公共子串

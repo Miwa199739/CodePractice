@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <iomanip>
+#include "AlgorithmCollection.h"
 
 using namespace std;
 
@@ -574,12 +575,269 @@ int findDuplicate(vector<int>& nums) {
 			if (nums[i] <= mid)
 				cnt++;
 		}
+		//小于等于mid的数的个数比mid大，说明重复的数肯定小于等于mid
 		if (cnt > mid)
 			max = mid - 1;
 		else
 			min = mid + 1;
 	}
 	return min;
+}
+
+//移除链表中等于val的元素
+ListNode* removeElements(ListNode* head, int val) {
+	ListNode* dummy = new ListNode(-1);
+	dummy->next = head;
+	ListNode* res = dummy;
+	while (res) {
+		if (res->next && res->next->val == val) {
+			res->next = res->next->next;
+		}
+		else
+			res = res->next;
+	}
+	return dummy->next;
+}
+
+
+//获得第k个排列
+string getPermutation(int n, int k) {
+	string res = "";
+	vector<int> fac(n, 1);
+	vector<char> num(n, 1);
+
+	for (int i = 1; i < n; i++) {
+		fac[i] = fac[i - 1] * i;
+	}
+
+	for (int i = 0; i < n; i++) {
+		num[i] = (i + 1) + '0';
+	}
+	k--;
+	for (int i = n; i >= 1; i--) {
+		int j = k / fac[i - 1];
+		k %= fac[i - 1];
+		res.push_back(num[j]);
+		num.erase(num.begin() + j);
+	}
+	return res;
+}
+
+int binSearchForPermu(vector<char> &m, int low, int high, int target) {
+	int mid = 0;
+	while (low <= high) {
+		mid = low + (high - low)/ 2;
+		if (target < m[mid]) {
+			high = mid - 1;
+		}
+		else if (m[mid] < target) {
+			low = mid + 1;
+		}
+		else
+			return mid;
+	}
+	return mid;
+}
+
+//给定permutation，确定是第几个
+int getPermutation(int n, string permuation) {
+	int k = 1;
+	vector<int> fac(n, 1);
+	vector<char> num(n, 1);
+
+	for (int i = 1; i < n; i++) {
+		fac[i] = fac[i - 1] * i;
+	}
+
+	for (int i = 0; i < n; i++) {
+		num[i] = (i + 1) + '0';
+	}
+
+	for (int i = 0; i < n; i++) {
+		int cur = binSearchForPermu(num, 0, num.size()-1, permuation[i]);
+		k += fac[n - i - 1] * cur;
+		num.erase(num.begin() + cur);
+	}
+	return k;
+}
+
+//反转链表
+ListNode* reverseListHelper(ListNode* before, ListNode* after) {
+	if (!before)
+		return before;
+	if (after) {
+		ListNode* afterNew = after->next;
+		after->next = before;
+		return reverseListHelper(after, afterNew);
+	}
+	else {
+		return before;
+	}
+}
+
+ListNode* reverseList(ListNode* head) {
+	if (!head)
+		return head;
+	ListNode *newHead = reverseListHelper(head, head->next);
+	//把头结点的next赋值成空
+	head->next = NULL;
+	return newHead;
+}
+
+//迭代做法
+ListNode* reverseListIterative(ListNode* head) {
+	if (!head)
+		return head;
+	ListNode *before = head;
+	ListNode *after = head->next;
+	while (before) {
+		if (after) {
+			ListNode *afterNew = after->next;
+			after->next = before;
+			before = after;
+			after = afterNew;
+		}
+		else {
+			break;
+		}
+	}
+	head->next = NULL;
+	return before;
+}
+
+//反转从m n之间的节点
+ListNode* reverseBetween(ListNode* head, int m, int n) {
+	if (!head)
+		return head;
+	if (m == n)
+		return head;
+	ListNode *res = head;
+	ListNode *before = head;
+	ListNode *beforeStart = head;
+	ListNode *pre = new ListNode(-1);
+	pre->next = head;
+	int i = 1;
+	while (i < m && before) {
+		before = before->next;
+		pre = pre->next;
+		i++;
+	}
+	i = 1;
+	beforeStart = before;
+	ListNode *after = before->next;
+	while (before && i < n - m + 1) {
+		if (after) {
+			ListNode *afterNew = after->next;
+			after->next = before;
+			before = after;
+			after = afterNew;
+		}
+		else
+			break;
+		i++;
+	}
+	pre->next = before;
+	beforeStart->next = after;
+	if (m == 1)//如果从head开始反转，那么head指针最后会被移动，所以我们要返回pre->next，问不是head
+		res = pre->next;
+	else
+		res = head;
+	delete pre;
+	return res;
+}
+
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+TreeNode* sortedArrayToBST(vector<int>& nums, int begin, int end) {
+	if (begin > end)
+		return NULL;
+	int mid = begin + (end - begin) / 2;
+	TreeNode* root = new TreeNode(nums[mid]);
+	root->left = sortedArrayToBST(nums, begin, mid - 1);
+	root->right = sortedArrayToBST(nums, mid+1, end);
+	return root;
+}
+//把排好序的数组转换成平衡二叉查找树
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+	if (nums.size() == 0)
+		return NULL;
+	int size = nums.size();
+	return sortedArrayToBST(nums, 0, size - 1);
+}
+
+
+TreeNode* sortedListToBSTHelper(ListNode* head, ListNode* tail) {
+	if (head == tail)
+		return NULL;
+	if (head->next == tail) {
+		TreeNode* root = new TreeNode(head->val);
+		return root;
+	}
+
+	ListNode* mid = head, *temp = head;
+	//找中间节点。用两个快慢指针，快指针每次走两步，慢指针每次走一步，当快指针走到最后一个时，慢指针走到中间
+	while (temp != tail && temp->next != tail) {
+		mid = mid->next;
+		temp = temp->next;
+	}
+	TreeNode* root = new TreeNode(mid->val);
+	root->left = sortedListToBSTHelper(head, mid);
+	root->right = sortedListToBSTHelper(mid->next, tail);
+	return root;
+}
+
+TreeNode* sortedListToBST(ListNode* head) {
+	return sortedListToBSTHelper(head, NULL);
+}
+
+//1.对于节点x:
+//定义PS1(x)为从x出发向leaf方向的第一类path中最大的path sum。
+//定义PS2(x)为以x为LCA的第二类path中的最大path sum。
+//显然如果我们求得所有节点x的PS1 & PS2，其中的最大值必然就是要求的max path sum。
+
+//2. 如何求PS1(x)、PS2(x) ?
+//(1) PS1(x) 、PS2(x)至少应该不小于x->val，因为x自己就可以作为一个单节点path。
+//(2) PS1(x) 、 PS2(x)可以从PS1(x->left)和PS1(x->right)来求得：
+//PS1(x) = max[max(PS1(x->left), 0), max(PS1(x->right), 0)] + x->val
+//PS2(x) = max(PS1(x->left), 0) + max(PS1(x->right), 0) + x->val
+//注意这里并不需要PS2(x->left) 以及 PS2(x->right) 因为子节点的2型path无法和父节点构成新的path。
+
+//3、需要返回PS1(x)以供上层的节点计算其PS1 & PS2.
+
+//4、对于leaf节点：PS1(x) = PS2(x) = x->val.
+
+int maxPathSumHelper(TreeNode* root, int &maxSum) {
+	if (!root)
+		return 0;
+
+	int maxPS1Left = 0, maxPS1Right = 0;
+
+	if (root->left)
+		maxPS1Left = max(maxPathSumHelper(root->left, maxSum), 0);
+	if (root->right)
+		maxPS1Right = max(maxPathSumHelper(root->right, maxSum), 0);
+	//第一种路径
+	int maxPS1 = max(maxPS1Left, maxPS1Right) + root->val;
+	//第二种路径
+	int maxPS2 = maxPS1Left + maxPS1Right + root->val;
+	//求最大值
+	maxSum = max(maxSum, max(maxPS1, maxPS2));
+
+	//返回第一种路径，不能返回第二种路径，因为
+	return maxPS1;
+}
+
+int maxPathSum(TreeNode* root) {
+	if (!root)
+		return 0;
+	int maxSum = INT_MIN;
+	maxPathSumHelper(root, maxSum);
+	return maxSum;
 }
 
 int main() {
@@ -628,6 +886,7 @@ int main() {
 	ListNode * l18 = new ListNode(8);
 	l11->next = l12;
 	l12->next = l13;
+	l12->next = NULL;
 	l13->next = l14;
 	l14->next = l15;
 	l15->next = l16;
@@ -649,5 +908,7 @@ int main() {
 	//for (auto a : vec)
 		//cout << a << endl;
 	//getIntersectionNode(l11, l21);
-	oddEvenList(l11);
+	//oddEvenList(l11);
+	//cout << getPermutation(4, "4132") << endl;
+	reverseBetween(l11,1,2);
 }

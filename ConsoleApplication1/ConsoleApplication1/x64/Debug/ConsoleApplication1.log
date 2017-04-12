@@ -1,9 +1,11 @@
 ﻿  B.cpp
-d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\b.cpp(52): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\b.cpp(62): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\b.cpp(97): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\b.cpp(136): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\b.cpp(179): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-d:\miwa\offer\codepractice\consoleapplication1\consoleapplication1\b.cpp(360): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-  ConsoleApplication1.vcxproj -> D:\Miwa\offer\CodePractice\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
-  ConsoleApplication1.vcxproj -> D:\Miwa\offer\CodePractice\ConsoleApplication1\x64\Debug\ConsoleApplication1.pdb (Full PDB)
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(53): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(63): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(98): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(137): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(180): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(361): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(565): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+d:\visualstudio projects\codepractice\consoleapplication1\consoleapplication1\b.cpp(655): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  ConsoleApplication1.vcxproj -> D:\VisualStudio Projects\CodePractice\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
+  ConsoleApplication1.vcxproj -> D:\VisualStudio Projects\CodePractice\ConsoleApplication1\x64\Debug\ConsoleApplication1.pdb (Full PDB)

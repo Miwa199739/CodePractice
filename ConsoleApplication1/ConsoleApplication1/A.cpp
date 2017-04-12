@@ -1381,13 +1381,15 @@ private:
 };
 
 void dfsForItinerary(unordered_map<string, vector<string>>& graph, string& begin,vector<string>& res) {
+	//因为这里我们并不知道一共有几个节点，也就是不能通过判断res的size来终止迭代
+	//我们只能每一走过一个地点时将这个地点删掉，最后当所有的地点被删除以后，再回溯
 	while(graph[begin].size()) {
+		//用法，用迭代器访问元素，像指针一样
 		string t = *graph[begin].begin();
 		graph[begin].erase(graph[begin].begin());
 		dfsForItinerary(graph, t, res);
 	}
-	//while循环最后跳出的时候说明整条路径都走完了，这是我们要回溯回去，所以这里的结点是insert而不是push_back
-	res.insert(graph[begin].begin(),begin);
+	res.insert(res.begin(),begin);
 }
 
 static bool cmpForString(string& a, string& b) {
