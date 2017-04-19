@@ -1207,8 +1207,8 @@ private:
 int longestPalindromeSubseq(string s) {
 	if (s.empty())
 		return 0;
-	//代表从0-i区间里的最长回文子序列
 	int size = s.size();
+	//代表从i-j区间里的最长回文子序列
 	vector<vector<int>> dp(size,vector<int>(size));
 	for (int i = size - 1; i >= 0; i--) {
 		dp[i][i] = 1;
@@ -1817,9 +1817,9 @@ vector<int> largestValues(TreeNode* root) {
 			if (current->val > maxValue) {
 				maxValue = current->val;
 			}
-			if(!current->left)
+			if(current->left)
 				queue.push(current->left);
-			if(!current->right)
+			if(current->right)
 				queue.push(current->right);
 		}
 		result.push_back(maxValue);
@@ -1997,7 +1997,6 @@ vector<TreeNode*> getBST(int min, int max) {
 	return res;
 }
 
-
 //求出所有能存储1-n的数的二叉搜索树
 //1. 根节点可以任取min ~max(例如min = 1, max = n)，假如取定为i。
 //2. 则left subtree由min ~i - 1组成，假设可以有L种可能。right subtree由i + 1 ~max组成，假设有R种可能。生成所有可能的left / right subtree。
@@ -2017,8 +2016,8 @@ vector<int> getResult(string input) {
 	vector<int> res;
 	for (int i = 0; i < input.size(); i++) {
 		if (input[i] == '+' || input[i] == '-' || input[i] == '*') {
-			vector<int> leftSubResult = getResult(input.substr(0, i));
-			vector<int> rightSubResult = getResult(input.substr(i+1));
+			vector<int> leftSubResult = getResult(input.substr(0, i));  //从input[0]开始的i个字符
+			vector<int> rightSubResult = getResult(input.substr(i+1)); //从input[i+1]开始到结尾的所有字符
 			for (int j = 0; j < leftSubResult.size(); j++) {
 				for (int k = 0; k < rightSubResult.size(); k++) {
 					if (input[i] == '+')

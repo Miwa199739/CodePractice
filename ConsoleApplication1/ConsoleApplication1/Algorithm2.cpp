@@ -143,29 +143,29 @@ void mergeArray(int a[], int m, int b[], int n) {
 	int k = m + n - 1;//m和n分别是A和B的长度
 	int i = m;
 	int j = n;
-		while (k >= 0) {
-			if (i >= 0 && j >= 0) {
-				if (a[i] > b[j]) {
-					a[k] = a[i];
-					i--;
-				}
-				else {
-					a[k] = b[j];
-					j--;
-				}
-			}
-			else if (i >= 0) {
+	while (k >= 0) {
+		if (i >= 0 && j >= 0) {
+			if (a[i] > b[j]) {
 				a[k] = a[i];
 				i--;
 			}
-			else if (j >= 0) {
+			else {
 				a[k] = b[j];
 				j--;
 			}
-			else
-				break;
-			k--;
 		}
+		else if (i >= 0) {
+			a[k] = a[i];
+			i--;
+		}
+		else if (j >= 0) {
+			a[k] = b[j];
+			j--;
+		}
+		else
+			break;
+		k--;
+	}
 }
 
 struct Interval {
@@ -279,7 +279,7 @@ vector<int> getModifiedArray(int length, vector<vector<int>>& updates) {
 }
 
 //小球穿越迷宫，能否从起始点到达终点
-bool hasPathHelperRecurion(vector<vector<int>>& maze, vector<vector<int>>& dp, vector<vector<bool>> &visited, int start_i, int start_j, int end_i, int end_j) {
+bool hasPathHelperRecursion(vector<vector<int>>& maze, vector<vector<int>>& dp, vector<vector<bool>> &visited, int start_i, int start_j, int end_i, int end_j) {
 	if (start_i == end_i && start_j == end_j)
 		return true;
 	//start_i，start_j这个点上次来过，不用再重复访问了，直接返回我们保存好的中间值
@@ -302,7 +302,7 @@ bool hasPathHelperRecurion(vector<vector<int>>& maze, vector<vector<int>>& dp, v
 		y -= dir[1];
 		//下一次换方向的时候从这一点开始
 		if (!visited[x][y]) {
-			res |= hasPathHelperRecurion(maze, dp, visited, x, y, end_i, end_j);
+			res |= hasPathHelperRecursion(maze, dp, visited, x, y, end_i, end_j);
 		}
 	}
 	visited[start_i][start_j] = false;
@@ -317,7 +317,7 @@ bool hasPath(vector<vector<int>>& maze, vector<int>& start, vector<int>& destina
 	int start_j = start[1];
 	vector<vector<bool>> visited(maze.size(), vector<bool>(maze[0].size(), false));
 	vector<vector<int>> dp(maze.size(), vector<int>(maze[0].size(), -1));
-	return hasPathHelperRecurion(maze, dp, visited, start_i, start_j, end_i, end_j);
+	return hasPathHelperRecursion(maze, dp, visited, start_i, start_j, end_i, end_j);
 }
 
 bool hasPathHelperIterative(vector<vector<int>>& maze, vector<vector<bool>> &visited, int start_i, int start_j, int end_i, int end_j) {
@@ -513,7 +513,7 @@ vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
 
 	queue<int> myQueue;
 
-	//把所有出度为0的点push进去，这些课的优先级最高
+	//把所有入度为0的点push进去，这些课的优先级最高
 	for (int i = 0; i < numCourses; i++) {
 		if (in[i] == 0)
 			myQueue.push(i);
@@ -952,6 +952,47 @@ int lengthOfLIS(vector<int>& nums) {
 	return maxLength;
 }
 
+int binSearchForLIS(int begin, int end, vector<int>& nums, int target) {
+	while (begin <= end) {
+		int mid = begin + (end - begin) / 2;
+		if (target > nums[mid]) {
+			begin = mid + 1;
+		}
+		else if (target < nums[mid]) {
+			end = mid - 1;
+		}
+		else
+			return mid;
+	}
+	return begin;
+}
+
+//最长递增子序列，O(nlogn)
+//我们先建立一个数组ends，把首元素放进去，然后比较之后的元素，如果遍历到的新元素比ends数组中的首元素小的话，替换首元素为此新元素;
+//如果遍历到的新元素比ends数组中的末尾元素还大的话，将此新元素添加到ends数组末尾(注意不覆盖原末尾元素)。
+//如果遍历到的新元素比ends数组首元素大，比尾元素小时，此时用二分查找法找到第一个不小于此新元素的位置，覆盖掉位置的原来的数字，以此类推直至遍历完整个nums数组，此时ends数组的长度就是我们要求的LIS的长度;
+//特别注意的是ends数组的值可能不是一个真实的LIS，比如若输入数组nums为{4, 2， 4， 5， 3， 7}，那么算完后的ends数组为{2， 3， 5， 7}，可以发现它不是一个原数组的LIS，只是长度相等而已，千万要注意这点
+int lengthOfLISII(vector<int>& nums) {
+	if (nums.size() < 2)
+		return nums.size();
+	int sizeN = nums.size() - 1;
+	//表示长度为i最长子序列的最后一个数最小可以是多少
+	vector<int> b = { nums[0] };
+	for (int i = 0; i <= sizeN; i++) {
+		//比首元素小
+		if (nums[i] < b[0])
+			b[0] = nums[i];
+		else if (nums[i] > b.back())
+			b.push_back(nums[i]);
+		else {
+			//找到第一个比nums[i]大的位置
+			int pos = binSearchForLIS(0, b.size() - 1, b, nums[i]);
+			//该位置的值替换为nums[i]
+			b[pos] = nums[i];
+		}
+	}
+	return b.size();
+}
 
 //把一个数的二进制表示翻转，再返回翻转后的数
 int reverseBits(int n) {

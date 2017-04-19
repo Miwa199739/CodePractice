@@ -29,7 +29,7 @@ int AlgorithmCollection::binSearch(int m[], int low, int high, int target) {
 			return mid;
 	}
 	//return  -1;
-	return mid;
+	return low;//这是target应该在的位置
 }
 
 //一般的插入排序，每次内层循环从i开始递减，前一个大于后一个就交换，外层循环为遍历整个数组。
@@ -427,11 +427,11 @@ UndirectedGraphNode* UndirectedGraphNode::cloneGraph(UndirectedGraphNode *node) 
 		//开始一个一个复制当前结点的邻居信息
 		for (int i = 0; i < cur->neighbors.size(); i++) {
 			UndirectedGraphNode *neighbor = cur->neighbors[i];
-			//如果之前没有拷贝过
+			//如果之前没有拷贝过,要先拷贝邻居节点，再设置新节点之间的邻居关系，最后在cmap里标记原节点与拷贝节点之间的map
 			if (cmap.find(neighbor) == cmap.end()) {
 				UndirectedGraphNode* neighborClone = new UndirectedGraphNode(neighbor->label);
 				cmap[cur]->neighbors.push_back(neighborClone);
-				cmap.insert({ neighbor , neighborClone }); //对应一开始的UndirectedGraphNode* curClone = cmap[cur]
+				cmap.insert({ neighbor , neighborClone }); 
 				graphQ.push(neighbor);
 			}
 			else {
@@ -632,44 +632,40 @@ void reverse(string s) {
 	cout << newstr << endl;
 }
 
-void AlgorithmCollection::fill(vector<vector<char>> &board, int i, int j, char target, char c) {
-	if (i < 0 || i> board.size() || j < 0 || j < board[0].size())
+void fill(vector<vector<char>> &board, int i, int j, char target, char c) {
+	if (i < 0 || i >= board.size() || j < 0 || j >= board[0].size() || board[i][j] != target)
 		return;
 
 	board[i][j] = c;
 	//在上下左右四个方向找联通区域，dfs递归
-	if (j - 1 > 0 && j - 1 < board[0].size() && board[i][j - 1] == target)
-		fill(board, i, j - 1, target, c);
-	if (j + 1 > 0 && j + 1 < board[0].size() && board[i][j + 1] == target)
-		fill(board, i, j + 1, target, c);
-	if (i - 1 > 0 && i - 1 < board.size() && board[i - 1][j] == target)
-		fill(board, i - 1, j, target, c);
-	if (i + 1 > 0 && i + 1 < board.size() && board[i + 1][j] == target)
-		fill(board, i + 1, j, target, c);
+	fill(board, i, j - 1, target, c);
+	fill(board, i, j + 1, target, c);
+	fill(board, i - 1, j, target, c);
+	fill(board, i + 1, j, target, c);
 
-	//迭代版本
+	/*//迭代版本
 	stack<pair<int, int>> kicked;
 	kicked.push(make_pair(i, j));
 
 	int m, n;
 	while (!kicked.empty()) {
-		i = kicked.top().first;
-		j = kicked.top().second;
-		board[i][j] = c;
-		kicked.pop();
-		if (j - 1 > 0 && j - 1 < board[0].size() && board[i][j - 1] == target)
-			kicked.push(make_pair(i, j - 1));
-		if (j + 1 > 0 && j + 1 < board[0].size() && board[i][j + 1] == target)
-			kicked.push(make_pair(i, j + 1));
-		if (i - 1 > 0 && i - 1 < board.size() && board[i - 1][j] == target)
-			kicked.push(make_pair(i - 1, j));
-		if (i + 1 > 0 && i + 1 < board.size() && board[i + 1][j] == target)
-			kicked.push(make_pair(i + 1, j));
-	}
+	i = kicked.top().first;
+	j = kicked.top().second;
+	board[i][j] = c;
+	kicked.pop();
+	if (j - 1 > 0 && j - 1 < board[0].size() && board[i][j - 1] == target)
+	kicked.push(make_pair(i, j - 1));
+	if (j + 1 > 0 && j + 1 < board[0].size() && board[i][j + 1] == target)
+	kicked.push(make_pair(i, j + 1));
+	if (i - 1 > 0 && i - 1 < board.size() && board[i - 1][j] == target)
+	kicked.push(make_pair(i - 1, j));
+	if (i + 1 > 0 && i + 1 < board.size() && board[i + 1][j] == target)
+	kicked.push(make_pair(i + 1, j));
+	}*/
 }
 
 //把边缘涉及的联通区域染成第三色
-void AlgorithmCollection::fillBorders(vector<vector<char>> &board, char target, char c) {
+void fillBorders(vector<vector<char>> &board, char target, char c) {
 	//染竖边
 	for (int i = 0; i < board.size(); i++) {
 		//如果边上有o，就顺着这个o继续染，找到这个o的连通区域
@@ -687,7 +683,7 @@ void AlgorithmCollection::fillBorders(vector<vector<char>> &board, char target, 
 	}
 }
 //把边缘涉及的联通区域再染回去
-void AlgorithmCollection::replace(vector<vector<char>> &board, char target, char c) {
+void replace(vector<vector<char>> &board, char target, char c) {
 	for (int i = 0; i < board.size(); i++) {
 		for (int j = 0; j < board[0].size(); j++) {
 			if (board[i][j] == target)
@@ -695,11 +691,47 @@ void AlgorithmCollection::replace(vector<vector<char>> &board, char target, char
 		}
 	}
 }
-void AlgorithmCollection::solve(vector<vector<char>> &board) {
-	fillBorders(board, 'o', 'Y');
-	replace(board, 'o', 'x');
-	replace(board, 'Y', 'o');
+void solve(vector<vector<char>> &board) {
+	if (board.size() == 0 || board[0].size() == 0)
+		return;
+	fillBorders(board, 'O', 'Y');
+	replace(board, 'O', 'X');
+	replace(board, 'Y', 'O');
 }
+
+void dfsForNumIslands(vector<vector<char>>& grid, int i, int j) {
+	int m = grid.size();
+	int n = grid[0].size();
+	if (i < 0 || i >= m || j < 0 || j >= n)
+		return;
+	if (grid[i][j] == '1') {
+		grid[i][j] = '2';
+		dfsForNumIslands(grid, i - 1, j);
+		dfsForNumIslands(grid, i + 1, j);
+		dfsForNumIslands(grid, i, j - 1);
+		dfsForNumIslands(grid, i, j + 1);
+	}
+}
+//找到所有被0包围的1的区域个数
+int numIslands(vector<vector<char>>& grid) {
+	if (grid.size() == 0 || grid[0].size() == 0)
+		return 0;
+	int m = grid.size();
+	int n = grid[0].size();
+	int res = 0;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (grid[i][j] != '1')
+				continue;
+			else {
+				res++;
+				dfsForNumIslands(grid, i, j);
+			}
+		}
+	}
+	return res;
+}
+
 
 //找最长连续子串
 int AlgorithmCollection::findLongestSequence(int a[], int size) {
